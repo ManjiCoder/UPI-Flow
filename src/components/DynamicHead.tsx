@@ -1,5 +1,4 @@
 import { appInfo } from '@/types/constant';
-import Head from 'next/head';
 import { ReactNode } from 'react';
 
 type DynamicHeadProps = {
@@ -14,10 +13,10 @@ export default function DynamicHead({
   children,
 }: DynamicHeadProps) {
   return (
-    <Head>
+    <head>
       <title>{title}</title>
       <meta name='description' content={desc} />
       {children}
-    </Head>
+    </head>
   );
 }
