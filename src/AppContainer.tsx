@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import Footer from './components/layout/Footer';
 import { ThemeBtn } from './components/layout/ThemeBtn';
 import { ThemeProvider } from './components/theme/ThemeProvider';
 
@@ -12,7 +13,7 @@ export default function AppContainer({ children }: AppContainerProp) {
         <ThemeBtn />
         {children}
       </ThemeProvider>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }
