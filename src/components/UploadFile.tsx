@@ -1,50 +1,51 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import * as pdfjsLib from 'pdfjs-dist';
+import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `http://localhost:5173/pdf.worker.mjs`;
+PDFJS.GlobalWorkerOptions.workerSrc = 'http://localhost:5173/pdf.worker.mjs';
 
-export function UploadFile() {
-  const [text, setText] = useState('');
-  const extractText = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+export default function UploadFile() {
+  const [pdfText, setPdfText] = useState('');
+  const onSuccess = async (event: ProgressEvent<FileReader>) => {
+    try {
+      if (!event.target || !event.target.result) return;
+      const fileBuffer = event.target.result;
+      const data = await PDFJS.getDocument({
+        data: fileBuffer,
+        password: '12121',
+      }).promise;
+      const totalPages = data.numPages;
 
-    const reader = new FileReader();
-    reader.readAsArrayBuffer(file);
-    reader.onload = async () => {
-      const arrayBuffer = reader.result as ArrayBuffer;
-
-      try {
-        const pdf = await pdfjsLib.getDocument({
-          data: arrayBuffer,
-          password: 'NARE0512',
-        }).promise;
-        console.log(`Number of pages: ${pdf.numPages}`);
-
-        // Loop through all the pages and extract text
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-          const page = await pdf.getPage(pageNum);
-          const textContent = await page.getTextContent();
-
-          const extractedText = textContent.items
-            .map((item: any) => item.str)
-            .join(' ');
-          console.log(`Page ${pageNum} text: ${extractedText}`);
-          setText(extractedText);
-        }
-      } catch (error) {
-        console.error('Error loading PDF:', error);
+      let text = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const page = await data.getPage(i);
+        const pageText = await page.getTextContent();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const textContext = pageText.items.map((obj) => obj.str).join('\n');
+        text += textContext;
       }
-    };
-
-    reader.onerror = (error) => {
-      console.error('Error reading file:', error);
-    };
+      setPdfText(text);
+    } catch (error) {
+      console.error(error, 'Error occured while extacting text');
+    }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      console.log(file);
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+
+      reader.onload = onSuccess;
+
+      reader.onerror = (error) => {
+        console.error(error, 'Error occured while reading file');
+      };
+    }
+  };
   return (
     <div className='grid mx-auto w-full max-w-sm items-center gap-1.5'>
       <Label htmlFor='picture'>Select PDF</Label>
@@ -52,9 +53,9 @@ export function UploadFile() {
         id='picture'
         type='file'
         accept='application/pdf'
-        onChange={extractText}
+        onChange={handleChange}
       />
-      {text}
+      <pre className='overflow-hidden pt-10 text-sm'>{pdfText}</pre>
     </div>
   );
 }
