@@ -9,7 +9,7 @@ export default function App() {
       <Routes>
         <Route path='/' Component={Home} />
         <Route path='/records' Component={Records} />
-        <Route path='*' Component={Home} />
+        {/* <Route path='*' Component={Home} /> */}
       </Routes>
     </AppContainer>
   );
