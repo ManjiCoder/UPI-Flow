@@ -5,8 +5,7 @@ import { appInfo } from '@/types/constant';
 export default function Home() {
   return (
     <PageWrapper className=''>
-      <h1 className='text-center text-primary'>{appInfo.title}</h1>
-
+      <h1 className='text-center text-primary border-none'>{appInfo.title}</h1>
       <UploadFile />
     </PageWrapper>
   );
