@@ -2,8 +2,9 @@ import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-
-PDFJS.GlobalWorkerOptions.workerSrc = 'http://localhost:5173/pdf.worker.mjs';
+PDFJS.GlobalWorkerOptions.workerSrc = `${
+  import.meta.env.VITE_BASE_URL
+}/pdf.worker.mjs`;
 
 export default function UploadFile() {
   const [pdfText, setPdfText] = useState('');
