@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import Footer from './components/layout/Footer';
-import { ThemeBtn } from './components/layout/ThemeBtn';
-import { ThemeProvider } from './components/theme/ThemeProvider';
+import Footer from './layout/Footer';
+import { ThemeBtn } from './layout/ThemeBtn';
+import { ThemeProvider } from './theme/ThemeProvider';
 
 type AppContainerProp = {
   children: ReactNode;

@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import AppContainer from './AppContainer';
+import AppContainer from './components/AppContainer';
 import Home from './pages/Home';
 import Records from './pages/Records';
 

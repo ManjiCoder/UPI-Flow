@@ -1,3 +1,4 @@
+import passbook from '@/utils/Passbook';
 import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
 import { Input } from './ui/input';
@@ -27,7 +28,10 @@ export default function UploadFile() {
         const textContext = pageText.items.map((obj) => obj.str).join('\n');
         text += textContext;
       }
-      setPdfText(text);
+      const newText = passbook(text);
+      if (newText) {
+        setPdfText(newText);
+      }
     } catch (error) {
       console.error(error, 'Error occured while extacting text');
     }
@@ -36,7 +40,6 @@ export default function UploadFile() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
-      console.log(file);
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
 
