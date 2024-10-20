@@ -1,4 +1,5 @@
 import DynamicHead from '@/components/DynamicHead';
+import Header from '@/components/Layout/Header';
 import { ModeToggle } from '@/components/theme/ModeToggle';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import '@/styles/globals.css';
@@ -19,6 +20,8 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <Component {...pageProps} />
         <ModeToggle />
+        {/* <Footer /> */}
+        <Header />
       </ThemeProvider>
     </div>
   );
