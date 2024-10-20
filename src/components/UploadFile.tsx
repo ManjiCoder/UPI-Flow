@@ -28,6 +28,7 @@ export default function UploadFile() {
         text += textContext;
       }
       setPdfText(text);
+      console.log(text);
     } catch (error) {
       console.error(error, 'Error occured while extacting text');
     }

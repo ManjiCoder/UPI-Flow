@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import AppContainer from './components/AppContainer';
 import Home from './pages/Home';
 import Records from './pages/Records';
+import Test from './pages/Test';
 
 export default function App() {
   return (
@@ -9,7 +10,7 @@ export default function App() {
       <Routes>
         <Route path='/' Component={Home} />
         <Route path='/records' Component={Records} />
-        {/* <Route path='*' Component={Home} /> */}
+        <Route path='/settings' Component={Test} />
       </Routes>
     </AppContainer>
   );
