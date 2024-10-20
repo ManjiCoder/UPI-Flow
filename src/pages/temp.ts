@@ -1,4 +1,60 @@
-export const str = `
+export const str = `MHW1/181D/1-1/WBF-M/03-12
+074001516127??NARE0512 421505
+
+MR.NARESH NARSINGH DHONDU
+ROOM,NO 379 JAGRU JATAN CHAWL,
+CHINCHPADA ROAD,NEAR KALI MATA,
+MANDIR CHINCHPADA AMBERNATH AM
+THANE
+MAHARASHTRA - INDIA - 421505
+
+Did you know? It's mandatory to be KYC compliant as per RBI guidelines. If you have not submitted your KYC documents, please visit the nearest
+branch or contact your Relationship Manager to complete KYC details for your Account.
+
+Summary of Accounts held under Cust ID: 591274102 as on October 15, 2024
+
+ACCOUNT DETAILS - INR
+
+ACCOUNT TYPE
+ 
+A/c BALANCE(I)
+ 
+FIXED DEPOSITS (LINKED) BAL.(II)
+ 
+TOTAL BALANCE(I+II)
+ 
+NOMINATION
+Savings A/c 074001516127
+ 
+7.89
+ 
+0.00
+ 
+7.89
+ 
+Registered
+TOTAL
+ 
+7.89
+ 
+0.00
+ 
+7.89
+
+Statement of Transactions in Savings Account Number: 074001516127 in INR for the period October 15, 2023 - October 15, 2024
+
+DATE
+ 
+MODE**
+ 
+PARTICULARS
+ 
+DEPOSITS
+ 
+WITHDRAWALS
+ 
+BALANCE
+
 15-10-2023
  
 B/F
@@ -110,16 +166,4 @@ Ltd./PTM07a3dd24ee204b45a00c4b59e62d159f/
 9,895.90
 
 Page 1 of
-14
-
-Your Base Branch: SHOP 9,10 MARYLAND CORNER,
-NEAR SION,CIRCLE ,NEXT TO NEXT SHOWROOM, SION
-(EAST),400022
-
-Visit
- 
-www.icicibank.com
-
-Dial your Bank
- 
-33667777`;
+14`;

@@ -13,13 +13,12 @@ const isValidDate = (dateStr: string) => {
   return isValid(parsedDate);
 };
 
-const generateICICIRecords = (str: string) => {
+export const generateICICIRecords = (str: string) => {
   try {
     const target =
       '\nDATE\n \nMODE**\n \nPARTICULARS\n \nDEPOSITS\n \nWITHDRAWALS\n \nBALANCE\n';
     const isTarget = str.includes(target);
-    // if (!isTarget) return new Error('Invalid records!');
-    if (!isTarget) return false;
+    if (!isTarget) throw new Error('Invalid records!');
     const startIdx = str.indexOf(target) + target.length;
 
     const dates: (string | number)[][] = [];

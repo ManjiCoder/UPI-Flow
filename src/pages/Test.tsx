@@ -1,5 +1,5 @@
 import PageWrapper from '@/components/layout/PageWrapper';
-import passbook from '@/utils/Passbook';
+import { generateICICIRecords } from '@/utils/Passbook';
 import { useEffect, useState } from 'react';
 import { str } from './temp';
 
@@ -7,8 +7,8 @@ export default function Test() {
   const [text, setText] = useState(str);
 
   useEffect(() => {
-    const newText = passbook(str);
-    console.log(newText);
+    const newText = generateICICIRecords(str);
+    // console.log(newText);
     if (newText) {
       setText(newText);
     }
