@@ -1,4 +1,5 @@
 'use client';
+import Passbook from '@/lib/passbook';
 import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
 import { Input } from './ui/input';
@@ -25,6 +26,7 @@ export default function UploadFile() {
         // @ts-ignore
         const textContext = pageText.items.map((obj) => obj.str).join('\n');
         text += textContext;
+        new Passbook(textContext).getRecordsICICI();
       }
       setPdfText(text);
     } catch (error) {
