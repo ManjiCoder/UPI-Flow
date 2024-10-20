@@ -1,5 +1,14 @@
 import { banks } from '@/types/constant';
 import { isValid, parse } from 'date-fns';
+interface Transaction {
+  date?: string;
+  mode?: string;
+  details?: string;
+  credit?: number;
+  debit?: number;
+  balance?: number;
+  refNo?: number;
+}
 // const sample = [
 //   { date: dates[0][0], details: newStr.slice(0, 25) },
 //   { date: dates[1][0], details: newStr.slice(25, 143) },
@@ -20,16 +29,14 @@ export const generateICICIRecords = (str: string) => {
     const isTarget = str.includes(target);
     if (!isTarget) throw new Error('Invalid records!');
     const startIdx = str.indexOf(target) + target.length;
-
-    const dates: (string | number)[][] = [];
     const newStr = str.slice(startIdx, str.length);
-    newStr.split('\n').filter((v, i) => {
-      const isDate = isValidDate(v);
-      if (isDate) {
-        console.log(v);
-        dates.push([v, v.length + i]);
-      }
-    });
+
+    const transactions: Transaction[] = [];
+    const dates = newStr
+      .split('\n')
+      .filter((val) => val !== '' && isValidDate(val));
+    console.table(dates);
+
     return newStr;
   } catch (error) {
     console.log(error);
