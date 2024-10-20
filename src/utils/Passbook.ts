@@ -36,11 +36,11 @@ const generateICICIRecords = (str: string) => {
   // console.log(newStr.slice(11, 16));
   // console.log(newStr.slice(16, 24));
   const sample = [
-    { date: dates[0][0], details: newStr.slice(11, 25) },
-    { date: dates[1][0], details: newStr.slice(38, 143) },
+    { date: dates[0][0], details: newStr.slice(0, 25) },
+    { date: dates[1][0], details: newStr.slice(25, 143) },
     { date: dates[2][0], details: newStr.slice(143, 250) },
     { date: dates[3][0], details: newStr.slice(250, 340) },
-    { date: dates[4][0], details: newStr.slice(340, 439) },
+    { date: dates[4][0], details: newStr.slice(340, 452) },
   ];
   console.log(sample);
   return newStr;
