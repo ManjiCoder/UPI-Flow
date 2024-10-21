@@ -20,3 +20,13 @@ export enum PaymentModes {
   OTHER = 'Other',
   INT = 'Int',
 }
+export interface Transaction {
+  date?: string;
+  mode?: string;
+  details?: string;
+  credit?: string;
+  debit?: string;
+  balance?: string;
+  refNo?: number | null;
+  amt?: string;
+}

@@ -1,3 +1,5 @@
+import { setRows } from '@/redux/features/UPI/paymentsSlices';
+import { useAppDispatch } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
 import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
@@ -9,6 +11,8 @@ PDFJS.GlobalWorkerOptions.workerSrc = `${
 
 export default function UploadFile() {
   const [pdfText, setPdfText] = useState('');
+  const dispatch = useAppDispatch();
+
   const onSuccess = async (event: ProgressEvent<FileReader>) => {
     try {
       if (!event.target || !event.target.result) return;
@@ -32,6 +36,7 @@ export default function UploadFile() {
       // console.log(text);
       const rows = passbook(text);
       console.table(rows);
+      dispatch(setRows(rows));
     } catch (error) {
       console.error(error, 'Error occured while extacting text');
     }

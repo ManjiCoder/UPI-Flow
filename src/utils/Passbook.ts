@@ -1,16 +1,6 @@
-import { banks, PaymentModes } from '@/types/constant';
+import { banks, PaymentModes, Transaction } from '@/types/constant';
 import { isValid, parse } from 'date-fns';
 
-interface Transaction {
-  date?: string;
-  mode?: string;
-  details?: string;
-  credit?: string;
-  debit?: string;
-  balance?: string;
-  refNo?: number | null;
-  amt?: string;
-}
 function emptyCheck(): (
   value: string,
   index: number,
