@@ -6,8 +6,8 @@ interface Transaction {
   details?: string;
   credit?: number;
   debit?: number;
-  balance?: number;
-  refNo?: number;
+  balance?: string;
+  refNo?: number | null;
 }
 // const sample = [
 //   { date: dates[0][0], details: newStr.slice(0, 25) },
@@ -32,11 +32,42 @@ export const generateICICIRecords = (str: string) => {
     const newStr = str.slice(startIdx, str.length);
 
     const transactions: Transaction[] = [];
-    const dates = newStr
-      .split('\n')
-      .filter((val) => val !== '' && isValidDate(val));
-    console.table(dates);
-
+    const dates: number[] = [];
+    newStr.split('\n').forEach((val, i) => {
+      if (isValidDate(val)) {
+        dates.push(i);
+      }
+    });
+    const lines = newStr.split('\n').filter((str) => str != '');
+    let payload: Transaction = {};
+    dates.forEach((str, i) => {
+      const l1 = str;
+      if (dates[i + 1]) {
+        const l2 = dates[i + 1];
+        const paymentInfo = lines.slice(l1 - 1, l2 - 1);
+        const n = paymentInfo.length;
+        paymentInfo.forEach((val, idx) => {
+          if (idx === 0) {
+            payload.date = val;
+          } else if (idx === n - 1) {
+            payload.balance = val;
+          } else if (val.includes('/')) {
+            if (!payload.details) {
+              payload.details = val;
+            } else {
+              payload.details += val;
+            }
+          }
+        });
+        const refNo = payload.details
+          ? payload.details.split('/').find((v) => parseInt(v))
+          : null;
+        payload.refNo = refNo ? parseInt(refNo) : null;
+        transactions.push(payload);
+        payload = {};
+      }
+    });
+    console.log(transactions);
     return newStr;
   } catch (error) {
     console.log(error);
