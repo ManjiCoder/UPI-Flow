@@ -13,8 +13,10 @@ export enum PaymentModes {
   CREDIT_CARD = 'Credit Card',
   DEBIT_CARD = 'Debit Card',
   NET_BANKING = 'Net Banking',
+  MOBILE_BANKING = 'MOBILE BANKING',
   UPI = 'UPI',
   WALLET = 'Wallet',
   CHEQUE = 'Cheque',
   OTHER = 'Other',
+  INT = 'Int',
 }

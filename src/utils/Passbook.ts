@@ -11,6 +11,13 @@ interface Transaction {
   refNo?: number | null;
   amt?: string;
 }
+function emptyCheck(): (
+  value: string,
+  index: number,
+  array: string[]
+) => unknown {
+  return (str) => !['', ' '].includes(str.trim());
+}
 
 const isValidDate = (dateStr: string) => {
   const parsedDate = parse(dateStr, 'dd-MM-yyyy', new Date());
@@ -69,10 +76,7 @@ export const generateICICIRecords = (str: string) => {
     const newStr = str.slice(startIdx, str.length);
 
     // lines is like collection of transacition in the table
-    const lines = newStr
-      .trim()
-      .split('\n')
-      .filter((str) => !['', ' '].includes(str));
+    const lines = newStr.trim().split('\n').filter(emptyCheck());
 
     // Setting index of valid dates
     lines.forEach((val, i) => {
@@ -80,6 +84,7 @@ export const generateICICIRecords = (str: string) => {
         dateIdx.push(i);
       }
     });
+    // console.log(lines);
 
     for (let i = 0; i < dateIdx.length; i++) {
       let j = i + 1;
@@ -87,15 +92,16 @@ export const generateICICIRecords = (str: string) => {
       const nextLine = dateIdx[j];
 
       if (!nextLine) {
-        const arr = lines.slice(currLine, lines.length - 2);
-        const rowData = extractRow(arr);
-        transactions.push(rowData);
+        // const arr = lines.slice(currLine, lines.length - 2);
+        // const rowData = extractRow(arr);
+        // transactions.push(rowData);
       } else {
         const arr = lines.slice(currLine, nextLine);
         const rowData = extractRow(arr);
         transactions.push(rowData);
       }
     }
+    // console.log(dateIdx.map((str) => lines[str]));
     return transactions;
   } catch (error) {
     console.log(error);
