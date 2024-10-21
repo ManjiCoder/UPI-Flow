@@ -1,4 +1,4 @@
-import { banks } from '@/types/constant';
+import { banks, PaymentModes } from '@/types/constant';
 import { isValid, parse } from 'date-fns';
 
 interface Transaction {
@@ -17,11 +17,49 @@ const isValidDate = (dateStr: string) => {
   return isValid(parsedDate);
 };
 
+const extractRow = (arr: string[]) => {
+  const payload: Transaction = {};
+  const n = arr.length;
+  payload.date = arr[0]; // Setting Date
+  payload.balance = arr[n - 1]; // Setting Balance
+
+  // Setting Details
+  const details = arr
+    .slice(1, n - 2)
+    .filter((str) => /[a-z]/i.test(str))
+    .join('');
+  payload.details = details;
+
+  // Setting referral number of transaction
+  const refNo = details
+    .split('/')
+    .filter((char) => !/[a-z]/i.test(char))
+    .join('');
+  if (refNo.length !== 0) {
+    payload.refNo = parseFloat(refNo);
+  }
+
+  // Setting Mode of Transaction
+  const mode = Object.values(PaymentModes).find((method) =>
+    details.toLowerCase().includes(method.toLowerCase())
+  );
+  if (mode) {
+    payload.mode = mode;
+  }
+
+  // Setting Amount
+  const amt = arr.slice(1, n).find((str) => !/[a-z]/i.test(str));
+  if (amt) {
+    payload.amt = amt;
+  }
+
+  return payload;
+};
+
 export const generateICICIRecords = (str: string) => {
   try {
     const transactions: Transaction[] = [];
     const dateIdx: number[] = [];
-    let payload: Transaction = {};
 
     const target =
       '\nDATE\n \nMODE**\n \nPARTICULARS\n \nDEPOSITS\n \nWITHDRAWALS\n \nBALANCE\n';
@@ -49,28 +87,18 @@ export const generateICICIRecords = (str: string) => {
       const prevLine = dateIdx[j];
       const currDate = lines[dateIdx[i]];
       const prevDate = lines[dateIdx[j]];
-      if (!prevDate) {
-        //
+
+      if (!prevLine) {
+        // const nextLine = dateIdx[i - 1];
+        // const arr = lines.slice(currLine, nextLine);
+        // console.log(currLine, prevLine);
+        // const rowData = extractRow(arr);
+        // transactions.push(rowData);
       } else {
+        console.log(prevDate, currDate, prevLine, currLine);
         const arr = lines.slice(prevLine, currLine);
-        const n = arr.length;
-        payload.date = arr[0]; // Setting Date
-        payload.balance = arr[n - 1]; // Setting Balance
-
-        // Setting Details
-        const details = arr
-          .slice(1, n - 2)
-          .filter((str) => /[a-z]/i.test(str))
-          .join('');
-        payload.details = details;
-
-        // Setting Amount
-        const amt = arr.slice(1, n - 1).find((str) => !/[a-z]/i.test(str));
-        if (amt) {
-          payload.amt = amt;
-        }
-        transactions.push(payload);
-        payload = {};
+        const rowData = extractRow(arr);
+        transactions.push(rowData);
       }
     }
     return transactions;
@@ -80,6 +108,7 @@ export const generateICICIRecords = (str: string) => {
   }
 };
 
+// Main Function
 function passbook(str: string) {
   if (str.includes(banks.icici)) {
     return generateICICIRecords(str);
