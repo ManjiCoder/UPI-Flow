@@ -82,21 +82,16 @@ export const generateICICIRecords = (str: string) => {
     });
 
     for (let i = 0; i < dateIdx.length; i++) {
-      let j = i - 1;
+      let j = i + 1;
       const currLine = dateIdx[i];
-      const prevLine = dateIdx[j];
-      const currDate = lines[dateIdx[i]];
-      const prevDate = lines[dateIdx[j]];
+      const nextLine = dateIdx[j];
 
-      if (!prevLine) {
-        // const nextLine = dateIdx[i - 1];
-        // const arr = lines.slice(currLine, nextLine);
-        // console.log(currLine, prevLine);
-        // const rowData = extractRow(arr);
-        // transactions.push(rowData);
+      if (!nextLine) {
+        const arr = lines.slice(currLine, lines.length - 2);
+        const rowData = extractRow(arr);
+        transactions.push(rowData);
       } else {
-        console.log(prevDate, currDate, prevLine, currLine);
-        const arr = lines.slice(prevLine, currLine);
+        const arr = lines.slice(currLine, nextLine);
         const rowData = extractRow(arr);
         transactions.push(rowData);
       }
