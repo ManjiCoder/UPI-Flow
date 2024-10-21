@@ -10,7 +10,7 @@ export default function Test() {
     const newText = generateICICIRecords(str);
     // console.log(newText);
     if (newText) {
-      setText(newText);
+      // setText(newText);
     }
   }, []);
 
