@@ -1,11 +1,11 @@
-import { banks } from '@/types/constant';
+import { banks, PaymentModes } from '@/types/constant';
 import { isValid, parse } from 'date-fns';
 interface Transaction {
   date?: string;
   mode?: string;
   details?: string;
-  credit?: number;
-  debit?: number;
+  credit?: string;
+  debit?: string;
   balance?: string;
   refNo?: number | null;
 }
@@ -39,29 +39,49 @@ export const generateICICIRecords = (str: string) => {
       }
     });
     const lines = newStr.split('\n').filter((str) => str != '');
-    let payload: Transaction = {};
+    let payload: Transaction & { amt?: number } = {};
     dates.forEach((str, i) => {
       const l1 = str;
       if (dates[i + 1]) {
         const l2 = dates[i + 1];
         const paymentInfo = lines.slice(l1 - 1, l2 - 1);
         const n = paymentInfo.length;
-        paymentInfo.forEach((val, idx) => {
-          if (idx === 0) {
-            payload.date = val;
-          } else if (idx === n - 1) {
-            payload.balance = val;
-          } else if (val.includes('/')) {
+        payload.date = paymentInfo[0];
+        payload.balance = paymentInfo[n - 1];
+        paymentInfo.slice(1, n - 2).forEach((val) => {
+          if (val.includes('/')) {
             if (!payload.details) {
               payload.details = val;
             } else {
               payload.details += val;
+            }
+          } else {
+            const isAlpha = /[a-z]/i.test(val);
+            if (isAlpha) {
+              if (!payload.details) {
+                payload.details = val + ',';
+              } else {
+                payload.details += val + ',';
+              }
+            }
+            if (!isAlpha) {
+              console.log(
+                parseFloat(val.replace(/,/g, '')),
+                paymentInfo.slice(-4)
+              );
+              payload.amt = parseFloat(val.replace(/,/g, '')) || undefined;
             }
           }
         });
         const refNo = payload.details
           ? payload.details.split('/').find((v) => parseInt(v))
           : null;
+        const mode = Object.values(PaymentModes).find((mode) =>
+          payload.details?.toLowerCase()?.includes(mode.toLowerCase())
+        );
+        if (mode) {
+          payload.mode = mode;
+        }
         payload.refNo = refNo ? parseInt(refNo) : null;
         transactions.push(payload);
         payload = {};
