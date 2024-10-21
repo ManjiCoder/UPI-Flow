@@ -8,7 +8,7 @@ export default function Test() {
 
   useEffect(() => {
     const newText = generateICICIRecords(str);
-    // console.log(newText);
+    console.log(newText);
     if (newText) {
       // setText(newText);
     }
