@@ -8,6 +8,7 @@ interface Transaction {
   debit?: string;
   balance?: string;
   refNo?: number | null;
+  amt?: string;
 }
 // const sample = [
 //   { date: dates[0][0], details: newStr.slice(0, 25) },
@@ -39,7 +40,7 @@ export const generateICICIRecords = (str: string) => {
       }
     });
     const lines = newStr.split('\n').filter((str) => str != '');
-    let payload: Transaction & { amt?: number } = {};
+    let payload: Transaction = {};
     dates.forEach((str, i) => {
       const l1 = str;
       if (dates[i + 1]) {
@@ -65,11 +66,16 @@ export const generateICICIRecords = (str: string) => {
               }
             }
             if (!isAlpha) {
-              console.log(
-                parseFloat(val.replace(/,/g, '')),
-                paymentInfo.slice(-4)
-              );
-              payload.amt = parseFloat(val.replace(/,/g, '')) || undefined;
+              if (
+                payload.details
+                  ?.toLowerCase()
+                  ?.includes('CASH WDL'.toLowerCase())
+              ) {
+                payload.debit = val;
+              }
+              payload.amt
+                ? (payload.amt += val.trim())
+                : (payload.amt = val.trim());
             }
           }
         });
@@ -83,12 +89,47 @@ export const generateICICIRecords = (str: string) => {
           payload.mode = mode;
         }
         payload.refNo = refNo ? parseInt(refNo) : null;
+
+        // console.log(
+        //   payload.date,
+        //   paymentInfo.slice(1, n - 1).filter((s) => !/[a-z]/i.test(s)),
+        //   payload.refNo,
+        //   payload.balance
+        // );
+        // const amtSlice = paymentInfo
+        //   .slice(1, n - 1)
+        //   .filter((s) => !/[a-z]/i.test(s));
+        // const isAmt = amtSlice.find((s) => s !== ' ');
+        // if (isAmt) {
+        //   const mid = Math.floor(amtSlice.length / 2);
+        //   const elemt = amtSlice.indexOf(isAmt);
+        //   if (!payload.details?.includes('CASH WDL'.toLowerCase())) {
+        //     payload.debit = isAmt;
+        //     if (elemt < mid) {
+        //       payload.debit = isAmt;
+        //     } else {
+        //       payload.credit = isAmt;
+        //     }
+        //   }
+        // }
         transactions.push(payload);
         payload = {};
       }
     });
-    console.log(transactions);
-    return newStr;
+    for (let i = 1; i < transactions.length; i++) {
+      const curBalance = transactions[i].balance?.replace(/,/g, '') as string;
+      const prevBalance = transactions[i - 1].balance?.replace(
+        /,/g,
+        ''
+      ) as string;
+      if (parseFloat(prevBalance) < parseFloat(curBalance)) {
+        transactions[i].credit = transactions[i].amt;
+      } else {
+        transactions[i].debit = transactions[i].amt;
+      }
+    }
+    // console.table(transactions);
+    return transactions;
   } catch (error) {
     console.log(error);
     return false;
