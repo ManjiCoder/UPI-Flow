@@ -92,14 +92,19 @@ export const generateICICIRecords = (str: string) => {
       const nextLine = dateIdx[j];
 
       if (!nextLine) {
-        const lastLine = lines
-          .slice(currLine + 1, nextLine)
-          .filter((str) => !/[a-z]/i.test(str) && !str.includes('-'));
-        const lastIdx = lines.indexOf(lastLine[1]);
-        // console.log(lines.slice(currLine, lastIdx), lastLine);
-        // const arr = lines.slice(currLine, lastIdx + 1);
-        // const rowData = extractRow(arr);
-        // transactions.push(rowData);
+        let counter = 0;
+        let lastBal = 0;
+        lines.slice(currLine + 1, currLine + 20).filter((str, idx) => {
+          if (!/[a-z]|[-\\/]/i.test(str)) {
+            counter += 1;
+            if (counter === 2) {
+              lastBal = currLine + 1 + idx;
+            }
+          }
+        });
+        const arr = lines.slice(currLine, lastBal + 1);
+        const rowData = extractRow(arr);
+        transactions.push(rowData);
       } else {
         let arr = lines.slice(currLine, nextLine);
         if (arr.includes('Page')) {
