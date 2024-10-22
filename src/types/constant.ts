@@ -24,9 +24,9 @@ export interface Transaction {
   date?: string;
   mode?: string;
   details?: string;
-  credit?: string;
-  debit?: string;
-  balance?: string;
+  credit?: number;
+  debit?: number;
+  balance?: number;
   refNo?: number | null;
-  amt?: string;
+  amt?: number;
 }

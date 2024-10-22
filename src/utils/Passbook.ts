@@ -14,14 +14,15 @@ const isValidDate = (dateStr: string) => {
   return isValid(parsedDate);
 };
 
+const stringToNumber = (str: string) => {
+  return parseFloat(str.replaceAll(',', ''));
+};
+
 const extractRow = (arr: string[]) => {
   const payload: Transaction = {};
   const n = arr.length;
   payload.date = arr[0]; // Setting Date
-  payload.balance = arr[n - 1]; // Setting Balance
-  if (/[a-z]/i.test(payload.balance)) {
-    // console.log(arr, payload.balance);
-  }
+  payload.balance = stringToNumber(arr[n - 1]); // Setting Balance
 
   // Setting Details
   const details = arr
@@ -50,10 +51,7 @@ const extractRow = (arr: string[]) => {
   // Setting Amount
   const amt = arr.slice(1, n).find((str) => !/[a-z]|[-\\/]/i.test(str));
   if (amt) {
-    payload.amt = amt;
-  }
-  if (amt?.includes('-')) {
-    console.log(amt, arr);
+    payload.amt = stringToNumber(amt);
   }
 
   return payload;
@@ -114,6 +112,29 @@ export const generateICICIRecords = (str: string) => {
         const rowData = extractRow(arr);
         transactions.push(rowData);
       }
+    }
+
+    // Settings credit or debit
+    for (let i = 0; i < transactions.length; i++) {
+      let j = i - 1;
+      const currRow = transactions[i];
+      const prevRow = transactions[j];
+      if (!prevRow) {
+        // @ts-ignore
+        if (currRow.balance < transactions[i + 1].balance) {
+          currRow.credit = currRow.amt;
+        } else {
+          currRow.debit = currRow.amt;
+        }
+      } else {
+        // @ts-ignore
+        if (currRow.balance > prevRow.balance) {
+          currRow.credit = currRow.amt;
+        } else {
+          currRow.debit = currRow.amt;
+        }
+      }
+      delete currRow.amt;
     }
     // console.table(dateIdx.map((str) => lines[str]));
     return transactions;
