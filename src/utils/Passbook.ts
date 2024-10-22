@@ -19,6 +19,9 @@ const extractRow = (arr: string[]) => {
   const n = arr.length;
   payload.date = arr[0]; // Setting Date
   payload.balance = arr[n - 1]; // Setting Balance
+  if (/[a-z]/i.test(payload.balance)) {
+    console.log(arr, payload.balance);
+  }
 
   // Setting Details
   const details = arr
@@ -66,7 +69,11 @@ export const generateICICIRecords = (str: string) => {
     const newStr = str.slice(startIdx, str.length);
 
     // lines is like collection of transacition in the table
-    const lines = newStr.trim().split('\n').filter(emptyCheck());
+    const lines = newStr
+      .trim()
+      .split('\n')
+      .filter(emptyCheck())
+      .flatMap((str) => str.split(' '));
 
     // Setting index of valid dates
     lines.forEach((val, i) => {
@@ -82,7 +89,12 @@ export const generateICICIRecords = (str: string) => {
       const nextLine = dateIdx[j];
 
       if (!nextLine) {
-        // const arr = lines.slice(currLine, lines.length - 2);
+        const lastLine = lines
+          .slice(currLine + 1, nextLine)
+          .filter((str) => !/[a-z]/i.test(str) && !str.includes('-'));
+        const lastIdx = lines.indexOf(lastLine[1]);
+        // console.log(lines.slice(currLine, lastIdx), lastLine);
+        // const arr = lines.slice(currLine, lastIdx + 1);
         // const rowData = extractRow(arr);
         // transactions.push(rowData);
       } else {
@@ -91,7 +103,7 @@ export const generateICICIRecords = (str: string) => {
         transactions.push(rowData);
       }
     }
-    // console.log(dateIdx.map((str) => lines[str]));
+    // console.table(dateIdx.map((str) => lines[str]));
     return transactions;
   } catch (error) {
     console.log(error);
