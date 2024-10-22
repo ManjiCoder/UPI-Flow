@@ -7,6 +7,7 @@ const paymentsSlice = createSlice({
   name: 'payments',
   initialState,
   reducers: {
+    // @ts-ignore
     setRows: (state, action) => {
       return action.payload;
     },
