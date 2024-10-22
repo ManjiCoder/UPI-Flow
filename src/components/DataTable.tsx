@@ -12,7 +12,11 @@ import { useAppSelector } from '@/redux/hooks';
 
 export function DataTable() {
   const invoices = useAppSelector((state) => state.payments);
-  const totalAmt = 100;
+  const totalAmt = invoices.reduce((x, y) => {
+    // @ts-ignore
+    return { balance: x.balance + y.balance };
+  }).balance;
+  console.log(totalAmt);
   return (
     <Table>
       <TableCaption>A list of your recent invoices.</TableCaption>

@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
 import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 PDFJS.GlobalWorkerOptions.workerSrc = `${
@@ -10,6 +11,7 @@ PDFJS.GlobalWorkerOptions.workerSrc = `${
 }/pdf.worker.mjs`;
 
 export default function UploadFile() {
+  const navigator = useNavigate();
   const [pdfText, setPdfText] = useState('');
   const dispatch = useAppDispatch();
 
@@ -37,6 +39,7 @@ export default function UploadFile() {
       const rows = passbook(text);
       console.table(rows);
       dispatch(setRows(rows));
+      navigator('/records');
     } catch (error) {
       console.error(error, 'Error occured while extacting text');
     }
