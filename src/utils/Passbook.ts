@@ -20,7 +20,7 @@ const extractRow = (arr: string[]) => {
   payload.date = arr[0]; // Setting Date
   payload.balance = arr[n - 1]; // Setting Balance
   if (/[a-z]/i.test(payload.balance)) {
-    console.log(arr, payload.balance);
+    // console.log(arr, payload.balance);
   }
 
   // Setting Details
@@ -41,16 +41,21 @@ const extractRow = (arr: string[]) => {
 
   // Setting Mode of Transaction
   const mode = Object.values(PaymentModes).find((method) =>
-    details.toLowerCase().includes(method.toLowerCase())
+    details.toLowerCase().includes(method.replaceAll(' ', '').toLowerCase())
   );
   if (mode) {
     payload.mode = mode;
   }
 
   // Setting Amount
-  const amt = arr.slice(1, n).find((str) => !/[a-z]/i.test(str));
+  const amt = arr
+    .slice(1, n)
+    .find((str) => !/[a-z]/i.test(str) && !str.includes('-'));
   if (amt) {
     payload.amt = amt;
+  }
+  if (amt?.includes('-')) {
+    console.log(amt, arr);
   }
 
   return payload;
@@ -98,7 +103,11 @@ export const generateICICIRecords = (str: string) => {
         // const rowData = extractRow(arr);
         // transactions.push(rowData);
       } else {
-        const arr = lines.slice(currLine, nextLine);
+        let arr = lines.slice(currLine, nextLine);
+        if (arr.includes('Page')) {
+          // @ts-ignore
+          arr = arr.slice(arr, arr.indexOf('Page'));
+        }
         const rowData = extractRow(arr);
         transactions.push(rowData);
       }

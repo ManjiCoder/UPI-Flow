@@ -8,8 +8,10 @@ export default function Test() {
 
   useEffect(() => {
     const newText = generateICICIRecords(str);
-    console.table(newText);
     if (newText) {
+      const error = newText.filter((obj) => /[a-z]/i.test(obj.balance));
+      console.table(error);
+      console.table(newText);
       // setText(newText);
     }
   }, []);
