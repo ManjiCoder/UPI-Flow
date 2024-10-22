@@ -80,7 +80,7 @@ export const generateICICIRecords = (str: string) => {
 
     // Setting index of valid dates
     lines.forEach((val, i) => {
-      if (isValidDate(val)) {
+      if (isValidDate(val) && /[a-z]/i.test(lines[i + 1])) {
         dateIdx.push(i);
       }
     });

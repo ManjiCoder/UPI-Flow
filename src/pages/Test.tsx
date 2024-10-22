@@ -9,8 +9,8 @@ export default function Test() {
   useEffect(() => {
     const newText = generateICICIRecords(str);
     if (newText) {
-      const error = newText.filter((obj) => /[a-z]/i.test(obj.balance));
-      console.table(error);
+      const error = newText.slice(-10);
+      // console.table(error);
       console.table(newText);
       // setText(newText);
     }
