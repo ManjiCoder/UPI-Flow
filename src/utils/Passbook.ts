@@ -48,9 +48,7 @@ const extractRow = (arr: string[]) => {
   }
 
   // Setting Amount
-  const amt = arr
-    .slice(1, n)
-    .find((str) => !/[a-z]/i.test(str) && !str.includes('-'));
+  const amt = arr.slice(1, n).find((str) => !/[a-z]|[-\\/]/i.test(str));
   if (amt) {
     payload.amt = amt;
   }
