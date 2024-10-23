@@ -30,6 +30,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Transaction } from '@/types/constant';
+import { format, parse } from 'date-fns';
 
 const formattedAmount = (amount: any, currency?: boolean) => {
   if (currency) {
@@ -69,9 +70,11 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: 'date',
     header: 'Date',
-    cell: ({ row }) => (
-      <div className='font-medium'>{row.getValue('date')}</div>
-    ),
+    cell: ({ row }) => {
+      const parsedDate = parse(row.getValue('date'), 'dd-MM-yyyy', new Date());
+      const formatedDate = format(parsedDate, 'dd-MMM-yy');
+      return <div className='font-medium'>{formatedDate}</div>;
+    },
   },
   {
     accessorKey: 'mode',
@@ -89,8 +92,8 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       const amount = row.getValue('credit');
       return (
-        <div className='text-green-600 dark:text-green-400'>
-          {amount ? formattedAmount(amount) : '-'}
+        <div className='font-medium text-green-600 dark:text-green-400'>
+          {amount ? `+${formattedAmount(amount)}` : ''}
         </div>
       );
     },
@@ -101,8 +104,8 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       const amount = row.getValue('debit');
       return (
-        <div className='text-red-600 dark:text-red-400'>
-          {amount ? formattedAmount(amount) : '-'}
+        <div className='font-medium text-red-600 dark:text-red-400'>
+          {amount ? `-${formattedAmount(amount)}` : ''}
         </div>
       );
     },
