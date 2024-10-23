@@ -195,7 +195,13 @@ export function DataTable({ data }: { data: Transaction[] }) {
       rowSelection,
     },
   });
-
+  const page = table.getState().pagination.pageIndex;
+  const pages = table.getPageOptions();
+  const newPages =
+    pages.length > 9
+      ? [0, ...pages.slice(page +1, page + 6), ...pages.slice(-1)]
+      : pages;
+  console.log(newPages);
   return (
     <div className='w-full'>
       <div className='flex items-center py-4'>
@@ -284,11 +290,30 @@ export function DataTable({ data }: { data: Transaction[] }) {
           </TableBody>
         </Table>
       </div>
+
+      <div className='flex justify-end pt-4 space-x-1'>
+        {newPages.map((pageIdx) => {
+          if (pageIdx === null) {
+            return (
+              <Button variant='outline' size='sm' disabled>
+                ...
+              </Button>
+            );
+          } else {
+            return (
+              <Button
+                variant={page === pageIdx ? 'secondary' : 'outline'}
+                size='sm'
+                onClick={() => table.setPageIndex(pageIdx)}
+              >
+                {pageIdx + 1}
+              </Button>
+            );
+          }
+        })}
+      </div>
+
       <div className='flex items-center justify-end space-x-2 py-4'>
-        <div className='flex-1 text-sm text-muted-foreground'>
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
         <div className='space-x-2'>
           <Button
             variant='outline'
@@ -298,6 +323,9 @@ export function DataTable({ data }: { data: Transaction[] }) {
           >
             Previous
           </Button>
+          <span className='flex-1 text-sm text-muted-foreground'>
+            {page + 1} of {table.getPageCount()}
+          </span>
           <Button
             variant='outline'
             size='sm'
