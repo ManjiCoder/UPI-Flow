@@ -13,7 +13,7 @@ export enum PaymentModes {
   CREDIT_CARD = 'Credit Card',
   DEBIT_CARD = 'Debit Card',
   NET_BANKING = 'Net Banking',
-  MOBILE_BANKING = 'MOBILE BANKING',
+  MOBILE_BANKING = 'Moblie Banking',
   UPI = 'UPI',
   WALLET = 'Wallet',
   CHEQUE = 'Cheque',
@@ -22,11 +22,11 @@ export enum PaymentModes {
 }
 export interface Transaction {
   date?: string;
-  mode?: string;
-  details?: string;
-  credit?: number;
-  debit?: number;
+  mode?: string | null;
+  credit?: number | null;
+  debit?: number | null;
   balance?: number;
   refNo?: number | null;
+  details?: string | null;
   amt?: number;
 }
