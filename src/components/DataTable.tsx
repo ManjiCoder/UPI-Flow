@@ -197,11 +197,13 @@ export function DataTable({ data }: { data: Transaction[] }) {
   });
   const page = table.getState().pagination.pageIndex;
   const pages = table.getPageOptions();
-  const newPages =
-    pages.length > 9
-      ? [0, ...pages.slice(page +1, page + 6), ...pages.slice(-1)]
-      : pages;
-  console.log(newPages);
+  const newPages = Array.from(
+    new Set([
+      0,
+      ...pages.slice(Math.max(0, page - 2), page + 4),
+      pages[pages.length - 1],
+    ])
+  );
   return (
     <div className='w-full'>
       <div className='flex items-center py-4'>
