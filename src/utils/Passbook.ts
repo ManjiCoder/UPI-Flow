@@ -34,7 +34,7 @@ const extractRow = (arr: string[]) => {
   // Setting referral number of transaction
   const refNo = details
     .split('/')
-    .filter((char) => !/[a-z]/i.test(char))
+    .filter((char) => !/[a-z]|[-\/]/i.test(char))
     .join('');
   if (refNo.length !== 0) {
     payload.refNo = parseFloat(refNo);
