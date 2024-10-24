@@ -18,7 +18,7 @@ export enum PaymentModes {
   WALLET = 'Wallet',
   CHEQUE = 'Cheque',
   OTHER = 'Other',
-  INT = 'Int',
+  Int = 'Interest',
 }
 export interface Transaction {
   date?: string;

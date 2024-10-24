@@ -30,7 +30,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Transaction } from '@/types/constant';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 
 const formattedAmount = (amount: any, currency?: boolean) => {
   if (currency) {
@@ -71,10 +71,10 @@ export const columns: ColumnDef<Transaction>[] = [
     accessorKey: 'date',
     header: 'Date',
     cell: ({ row }) => {
-      const parsedDate = parse(row.getValue('date'), 'dd-MM-yyyy', new Date());
-      const formatedDate = format(parsedDate, 'dd-MMM-yy');
+      const formatedDate = format(row.getValue('date'), 'dd-MMM-yy');
       return <div className='font-medium'>{formatedDate}</div>;
     },
+    sortingFn: 'datetime',
   },
   {
     accessorKey: 'mode',
@@ -97,6 +97,7 @@ export const columns: ColumnDef<Transaction>[] = [
         </div>
       );
     },
+    sortingFn: 'alphanumeric',
   },
   {
     accessorKey: 'debit',
@@ -169,7 +170,9 @@ export const columns: ColumnDef<Transaction>[] = [
 ];
 
 export function DataTable({ data }: { data: Transaction[] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: 'date', desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -249,7 +252,11 @@ export function DataTable({ data }: { data: Transaction[] }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      onClick={header.column.getToggleSortingHandler()}
+                      className='cursor-pointer'
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

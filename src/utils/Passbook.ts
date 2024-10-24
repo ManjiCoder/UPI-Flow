@@ -21,7 +21,7 @@ const stringToNumber = (str: string) => {
 const extractRow = (arr: string[]) => {
   const payload: Transaction = {};
   const n = arr.length;
-  payload.date = arr[0]; // Setting Date
+  payload.date = parse(arr[0], 'dd-MM-yyyy', new Date()).toISOString(); // Setting Date
   payload.balance = stringToNumber(arr[n - 1]); // Setting Balance
 
   // Setting Details
@@ -32,17 +32,19 @@ const extractRow = (arr: string[]) => {
   payload.details = details;
 
   // Setting referral number of transaction
-  const refNo = details
-    .split('/')
-    .filter((char) => !/[a-z]|[-\/]/i.test(char))
-    .join('');
+  const refNo = details.includes(':')
+    ? details.split(':')[0]
+    : details
+        .split('/')
+        .filter((char) => !/[a-z]|[-\/]/i.test(char))
+        .join('');
   if (refNo.length !== 0) {
     payload.refNo = parseFloat(refNo);
   }
 
   // Setting Mode of Transaction
   const mode = Object.values(PaymentModes).find((method) =>
-    details.toLowerCase().includes(method.replaceAll(' ', '').toLowerCase())
+    details.toLowerCase().includes(method.replaceAll('_', ' ').toLowerCase())
   );
   if (mode) {
     payload.mode = mode;
