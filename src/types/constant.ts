@@ -21,6 +21,7 @@ export enum PaymentModes {
   Int = 'Interest',
 }
 export interface Transaction {
+  id: number;
   date?: string;
   mode?: string | null;
   credit?: number | null;

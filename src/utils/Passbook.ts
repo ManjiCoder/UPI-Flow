@@ -18,8 +18,10 @@ const stringToNumber = (str: string) => {
   return parseFloat(str.replaceAll(',', ''));
 };
 
-const extractRow = (arr: string[]) => {
-  const payload: Transaction = {};
+const extractRow = (arr: string[], id: number) => {
+  const payload: Transaction = {
+    id,
+  };
   const n = arr.length;
   payload.date = parse(arr[0], 'dd-MM-yyyy', new Date()).toISOString(); // Setting Date
   payload.balance = stringToNumber(arr[n - 1]); // Setting Balance
@@ -116,7 +118,7 @@ export const generateICICIRecords = (str: string) => {
           }
         });
         const arr = lines.slice(currLine, lastBal + 1);
-        const rowData = extractRow(arr);
+        const rowData = extractRow(arr, transactions.length + 1);
         transactions.push(rowData);
       } else {
         let arr = lines.slice(currLine, nextLine);
@@ -124,7 +126,7 @@ export const generateICICIRecords = (str: string) => {
           // @ts-ignore
           arr = arr.slice(arr, arr.indexOf('Page'));
         }
-        const rowData = extractRow(arr);
+        const rowData = extractRow(arr, transactions.length + 1);
         transactions.push(rowData);
       }
     }

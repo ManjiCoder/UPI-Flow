@@ -26,6 +26,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -68,6 +69,11 @@ export const columns: ColumnDef<Transaction>[] = [
   //   enableSorting: false,
   //   enableHiding: false,
   // },
+  {
+    accessorKey: 'id',
+    header: 'No.',
+    cell: ({ row }) => <div className=''>{row.getValue('id')}</div>,
+  },
   {
     accessorKey: 'date',
     header: 'Date',
@@ -172,7 +178,7 @@ export const columns: ColumnDef<Transaction>[] = [
 
 export function DataTable({ data }: { data: Transaction[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([
-    { id: 'date', desc: true },
+    { id: 'id', desc: true },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -201,7 +207,26 @@ export function DataTable({ data }: { data: Transaction[] }) {
   });
   const page = table.getState().pagination.pageIndex;
   const pages = table.getPageOptions();
-  const newPages = pages.slice(Math.min(0 + page, pages.length - 8), 8 + page);
+
+  const newPages =
+    pages.length > 8
+      ? pages.slice(
+          Math.min(0 + page, pages.length - 8),
+          Math.min(pages.length, 8 + page)
+        )
+      : pages;
+
+  const totalCredit = table
+    .getRowModel()
+    .rows.map((row) => row.original.credit)
+    .filter(Boolean) // @ts-ignore
+    .reduce((x, y) => x + y);
+  const totalDebit = table
+    .getRowModel()
+    .rows.map((row) => row.original.debit)
+    .filter(Boolean) // @ts-ignore
+    .reduce((x, y) => x + y);
+
   return (
     <div className='w-full'>
       <div className='flex items-center py-4'>
@@ -292,6 +317,18 @@ export function DataTable({ data }: { data: Transaction[] }) {
               </TableRow>
             )}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={4}>Total</TableCell>
+              <TableCell className='text-left text-green-600 dark:text-green-400'>
+                {totalCredit ? formattedAmount(totalCredit, true) : 0}
+              </TableCell>
+              <TableCell className='text-left text-red-600 dark:text-red-400'>
+                {totalDebit ? formattedAmount(totalDebit, true) : 0}
+              </TableCell>
+              <TableCell className='text-left'>{/* Total */}</TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
 
@@ -300,14 +337,17 @@ export function DataTable({ data }: { data: Transaction[] }) {
           <span>Rows per page:</span>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex items-center'>
-              <Button variant='ghost'>
+              <Button variant='ghost' className='px-2'>
                 {table.getState().pagination.pageSize}
                 <ChevronDown size={20} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='!w-16'>
+            <DropdownMenuContent className='min-w-14'>
               {[10, 15, 25, 50, 100].map((pageSize) => (
-                <DropdownMenuItem onClick={() => table.setPageSize(pageSize)}>
+                <DropdownMenuItem
+                  className='cursor-pointer'
+                  onClick={() => table.setPageSize(pageSize)}
+                >
                   {pageSize}
                 </DropdownMenuItem>
               ))}
