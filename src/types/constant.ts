@@ -22,11 +22,11 @@ export enum PaymentModes {
 }
 export interface Transaction {
   id: number;
-  date?: string;
+  date: string;
+  balance: number;
   mode?: string | null;
   credit?: number | null;
   debit?: number | null;
-  balance?: number;
   refNo?: string | null;
   details?: string | null;
   amt?: number;
