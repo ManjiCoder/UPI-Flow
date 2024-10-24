@@ -26,7 +26,7 @@ export interface Transaction {
   credit?: number | null;
   debit?: number | null;
   balance?: number;
-  refNo?: number | null;
+  refNo?: string | null;
   details?: string | null;
   amt?: number;
 }

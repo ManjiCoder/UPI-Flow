@@ -211,10 +211,10 @@ export function DataTable({ data }: { data: Transaction[] }) {
     <div className='w-full'>
       <div className='flex items-center py-4'>
         <Input
-          placeholder='Filter date...'
-          value={(table.getColumn('date')?.getFilterValue() as string) ?? ''}
+          placeholder='Filter Ref No...'
+          value={(table.getColumn('refNo')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('date')?.setFilterValue(event.target.value)
+            table.getColumn('refNo')?.setFilterValue(event.target.value)
           }
           className='max-w-sm'
         />

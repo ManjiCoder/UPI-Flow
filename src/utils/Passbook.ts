@@ -38,18 +38,28 @@ const extractRow = (arr: string[]) => {
         .split('/')
         .filter((char) => !/[a-z]|[-\/]/i.test(char))
         .join('');
+
   if (refNo.length !== 0) {
-    payload.refNo = parseFloat(refNo);
+    payload.refNo = refNo;
   }
 
   // Setting Mode of Transaction
-  const mode = Object.values(PaymentModes).find((method) =>
-    details.toLowerCase().includes(method.replaceAll('_', ' ').toLowerCase())
+  const mode = Object.keys(PaymentModes).find((method) =>
+    arr
+      .slice(1, n - 2)
+      .join('')
+      .toLowerCase()
+      .includes(method.replaceAll('_', '').toLowerCase())
   );
+
   if (mode) {
-    payload.mode = mode;
+    // @ts-ignore
+    payload.mode = PaymentModes[mode];
   }
 
+  if (mode == PaymentModes.NET_BANKING) {
+    console.log(arr);
+  }
   // Setting Amount
   const amt = arr.slice(1, n).find((str) => !/[a-z]|[-\\/]/i.test(str));
   if (amt) {
