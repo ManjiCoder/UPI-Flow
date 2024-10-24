@@ -14,6 +14,7 @@ export default function Analytics() {
       .flatMap((obj) => obj.credit)
       .filter(Boolean)
       .reduce((x, y) => {
+        // @ts-ignore
         return x + y;
       }, 0);
   });
@@ -24,16 +25,22 @@ export default function Analytics() {
       .map((obj) => obj.debit)
       .filter(Boolean)
       .reduce((x, y) => {
+        // @ts-ignore
         return x + y;
       }, 0);
   });
-
-  console.log(totalCredit);
+  const chartData = monthsName.map((yearMonth, i) => {
+    return {
+      date: format(yearMonth, 'MMM-yy'),
+      credit: totalCredit[i],
+      debit: totalDebit[i],
+    };
+  });
 
   return (
     <PageWrapper>
       <h1 className='text-center'>Analytics</h1>
-      <MonthlyChart />
+      <MonthlyChart chartData={chartData} />
     </PageWrapper>
   );
 }
