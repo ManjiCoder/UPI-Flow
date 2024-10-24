@@ -18,6 +18,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -294,35 +295,55 @@ export function DataTable({ data }: { data: Transaction[] }) {
         </Table>
       </div>
 
-      <div className='flex justify-end py-4 space-x-1'>
-        <Button
-          variant='ghost'
-          size='sm'
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          onDoubleClick={() => table.firstPage()}
-        >
-          <ArrowLeft />
-        </Button>
-        {newPages.map((pageIdx) => (
+      <section className='flex max-sm:flex-col max-sm:gap-2 items-center justify-between py-4 space-x-1'>
+        <div className='flex items-center space-x-2'>
+          <span>Rows per page:</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger className='flex items-center'>
+              <Button variant='ghost'>
+                {table.getState().pagination.pageSize}
+                <ChevronDown size={20} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='!w-16'>
+              {[10, 15, 25, 50, 100].map((pageSize) => (
+                <DropdownMenuItem onClick={() => table.setPageSize(pageSize)}>
+                  {pageSize}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className='flex place-items-center space-x-1'>
           <Button
-            variant={page === pageIdx ? 'secondary' : 'outline'}
+            variant='ghost'
             size='sm'
-            onClick={() => table.setPageIndex(pageIdx)}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            onDoubleClick={() => table.firstPage()}
           >
-            {pageIdx + 1}
+            <ArrowLeft />
           </Button>
-        ))}
-        <Button
-          variant='ghost'
-          size='sm'
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          onDoubleClick={() => table.lastPage()}
-        >
-          <ArrowRight />
-        </Button>
-      </div>
+          {newPages.map((pageIdx) => (
+            <Button
+              variant={page === pageIdx ? 'secondary' : 'outline'}
+              size='sm'
+              onClick={() => table.setPageIndex(pageIdx)}
+            >
+              {pageIdx + 1}
+            </Button>
+          ))}
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            onDoubleClick={() => table.lastPage()}
+          >
+            <ArrowRight />
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }
