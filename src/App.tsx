@@ -15,14 +15,14 @@ const Test = lazy(() => import('./pages/Test'));
 export default function App() {
   return (
     <AppContainer>
-      <Routes>
-        <Suspense fallback={<Loader />}>
+      <Suspense fallback={<Loader />}>
+        <Routes>
           <Route path='/' Component={Home} />
           <Route path='/records' Component={Records} />
           <Route path='/analytics' Component={Analytics} />
           <Route path='/settings' Component={Test} />
-        </Suspense>
-      </Routes>
+        </Routes>
+      </Suspense>
     </AppContainer>
   );
 }

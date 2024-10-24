@@ -1,6 +1,15 @@
 import paymentsSlice from '@/redux/features/UPI/paymentsSlices';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { persistReducer, persistStore } from 'redux-persist';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
@@ -16,6 +25,12 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: persistReducer(persistConfig, rootReducer),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export default store;
