@@ -21,6 +21,8 @@ const stringToNumber = (str: string) => {
 const extractRow = (arr: string[], id: number) => {
   const payload: Transaction = {
     id,
+    date: '',
+    balance: 0,
   };
   const n = arr.length;
   payload.date = parse(arr[0], 'dd-MM-yyyy', new Date()).toISOString(); // Setting Date
