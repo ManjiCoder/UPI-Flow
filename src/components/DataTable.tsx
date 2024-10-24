@@ -219,13 +219,19 @@ export function DataTable({ data }: { data: Transaction[] }) {
   const totalCredit = table
     .getRowModel()
     .rows.map((row) => row.original.credit)
-    .filter(Boolean) // @ts-ignore
-    .reduce((x, y) => x + y);
+    .filter(Boolean)
+    .reduce((x, y) => {
+      // @ts-ignore
+      return x + y;
+    }, 0);
   const totalDebit = table
     .getRowModel()
     .rows.map((row) => row.original.debit)
-    .filter(Boolean) // @ts-ignore
-    .reduce((x, y) => x + y);
+    .filter(Boolean)
+    .reduce((x, y) => {
+      // @ts-ignore
+      return x + y;
+    }, 0);
 
   return (
     <div className='w-full'>
@@ -319,7 +325,9 @@ export function DataTable({ data }: { data: Transaction[] }) {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={4}>Total</TableCell>
+              <TableCell colSpan={table.getVisibleFlatColumns().length - 3}>
+                Total
+              </TableCell>
               <TableCell className='text-left text-green-600 dark:text-green-400'>
                 {totalCredit ? `+${formattedAmount(totalCredit)}` : 0}
               </TableCell>
@@ -347,7 +355,7 @@ export function DataTable({ data }: { data: Transaction[] }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='min-w-14'>
-              {[10, 15, 25, 50, 100, 500, 1000].map((pageSize) => (
+              {[5, 10, 15, 25, 50, 100, 500, 1000].map((pageSize) => (
                 <DropdownMenuItem
                   className='cursor-pointer'
                   onClick={() => table.setPageSize(pageSize)}
