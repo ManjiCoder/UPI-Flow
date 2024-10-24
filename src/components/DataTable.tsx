@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ChevronDown } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -200,13 +200,7 @@ export function DataTable({ data }: { data: Transaction[] }) {
   });
   const page = table.getState().pagination.pageIndex;
   const pages = table.getPageOptions();
-  const newPages = Array.from(
-    new Set([
-      0,
-      ...pages.slice(Math.max(0, page - 2), page + 4),
-      pages[pages.length - 1],
-    ])
-  );
+  const newPages = pages.slice(Math.min(0 + page, pages.length - 8), 8 + page);
   return (
     <div className='w-full'>
       <div className='flex items-center py-4'>
@@ -300,50 +294,34 @@ export function DataTable({ data }: { data: Transaction[] }) {
         </Table>
       </div>
 
-      <div className='flex justify-end pt-4 space-x-1'>
-        {newPages.map((pageIdx) => {
-          if (pageIdx === null) {
-            return (
-              <Button variant='outline' size='sm' disabled>
-                ...
-              </Button>
-            );
-          } else {
-            return (
-              <Button
-                variant={page === pageIdx ? 'secondary' : 'outline'}
-                size='sm'
-                onClick={() => table.setPageIndex(pageIdx)}
-              >
-                {pageIdx + 1}
-              </Button>
-            );
-          }
-        })}
-      </div>
-
-      <div className='flex items-center justify-end space-x-2 py-4'>
-        <div className='space-x-2'>
+      <div className='flex justify-end py-4 space-x-1'>
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          onDoubleClick={() => table.firstPage()}
+        >
+          <ArrowLeft />
+        </Button>
+        {newPages.map((pageIdx) => (
           <Button
-            variant='outline'
+            variant={page === pageIdx ? 'secondary' : 'outline'}
             size='sm'
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.setPageIndex(pageIdx)}
           >
-            Previous
+            {pageIdx + 1}
           </Button>
-          <span className='flex-1 text-sm text-muted-foreground'>
-            {page + 1} of {table.getPageCount()}
-          </span>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        ))}
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          onDoubleClick={() => table.lastPage()}
+        >
+          <ArrowRight />
+        </Button>
       </div>
     </div>
   );

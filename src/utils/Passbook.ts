@@ -55,11 +55,14 @@ const extractRow = (arr: string[]) => {
   if (mode) {
     // @ts-ignore
     payload.mode = PaymentModes[mode];
+    // @ts-ignore
+    if (PaymentModes[mode] === PaymentModes.CASH) {
+      if (refNo.trim().length === 0) {
+        payload.refNo = details.split('/')[1];
+      }
+    }
   }
 
-  if (mode == PaymentModes.NET_BANKING) {
-    console.log(arr);
-  }
   // Setting Amount
   const amt = arr.slice(1, n).find((str) => !/[a-z]|[-\\/]/i.test(str));
   if (amt) {
