@@ -23,8 +23,11 @@ const rootReducer = combineReducers({
   payments: paymentsSlice.reducer,
 });
 
+// persistReducer should be here only else Types error will appears
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 const store = configureStore({
-  reducer: persistReducer(persistConfig, rootReducer),
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
