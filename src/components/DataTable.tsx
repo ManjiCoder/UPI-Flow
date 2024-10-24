@@ -180,9 +180,9 @@ export function DataTable({ data }: { data: Transaction[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: 'id', desc: true },
   ]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([
+    // { id: 'date', value: '2024-09' },
+  ]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -237,10 +237,10 @@ export function DataTable({ data }: { data: Transaction[] }) {
     <div className='w-full'>
       <div className='flex items-center py-4'>
         <Input
-          placeholder='Filter Ref No...'
-          value={(table.getColumn('refNo')?.getFilterValue() as string) ?? ''}
+          placeholder='Filter Date...'
+          value={(table.getColumn('date')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('refNo')?.setFilterValue(event.target.value)
+            table.getColumn('date')?.setFilterValue(event.target.value)
           }
           className='max-w-sm'
         />
