@@ -321,12 +321,16 @@ export function DataTable({ data }: { data: Transaction[] }) {
             <TableRow>
               <TableCell colSpan={4}>Total</TableCell>
               <TableCell className='text-left text-green-600 dark:text-green-400'>
-                {totalCredit ? formattedAmount(totalCredit, true) : 0}
+                {totalCredit ? `+${formattedAmount(totalCredit)}` : 0}
               </TableCell>
               <TableCell className='text-left text-red-600 dark:text-red-400'>
-                {totalDebit ? formattedAmount(totalDebit, true) : 0}
+                {totalDebit ? `-${formattedAmount(totalDebit)}` : 0}
               </TableCell>
-              <TableCell className='text-left'>{/* Total */}</TableCell>
+              <TableCell className='text-right'>
+                {totalCredit && totalDebit
+                  ? formattedAmount(totalCredit - totalDebit, true)
+                  : 0}
+              </TableCell>
             </TableRow>
           </TableFooter>
         </Table>
@@ -343,7 +347,7 @@ export function DataTable({ data }: { data: Transaction[] }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='min-w-14'>
-              {[10, 15, 25, 50, 100].map((pageSize) => (
+              {[10, 15, 25, 50, 100, 500, 1000].map((pageSize) => (
                 <DropdownMenuItem
                   className='cursor-pointer'
                   onClick={() => table.setPageSize(pageSize)}
