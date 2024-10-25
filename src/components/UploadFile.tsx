@@ -3,7 +3,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
 import { File } from 'buffer';
 import * as PDFJS from 'pdfjs-dist';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Input } from './ui/input';
@@ -12,10 +12,22 @@ PDFJS.GlobalWorkerOptions.workerSrc = `${
   import.meta.env.VITE_BASE_URL
 }/pdf.worker.mjs`;
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 export default function UploadFile() {
   const navigator = useNavigate();
   const [pdfText, setPdfText] = useState('');
-  const [pass, setPass] = useState(false);
+  const [pass, setPass] = useState('');
+  const [isPass, setIsPass] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const dispatch = useAppDispatch();
 
@@ -26,7 +38,7 @@ export default function UploadFile() {
       const fileBuffer = event.target.result;
       const data = await PDFJS.getDocument({
         data: fileBuffer,
-        password: '12121',
+        password: pass,
       }).promise;
       const totalPages = data.numPages;
 
@@ -34,7 +46,6 @@ export default function UploadFile() {
       for (let i = 1; i <= totalPages; i++) {
         const page = await data.getPage(i);
         const pageText = await page.getTextContent();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const textContext = pageText.items.map((obj) => obj.str).join('\n');
         text += textContext;
@@ -55,8 +66,7 @@ export default function UploadFile() {
       navigator('/records');
     } catch (error) {
       toast.update(toastId, {
-        // @ts-ignore
-        render: error.message || 'Error occurred while extracting text',
+        render: 'Error occurred while extracting text',
         type: 'error',
         isLoading: false,
         className: 'rotateY animated',
@@ -64,11 +74,11 @@ export default function UploadFile() {
         closeButton: true,
       });
       console.error(error, 'Error occured while extacting text');
-      setPass(true);
+      setIsPass(true);
     }
   };
 
-  const proccessFile = (file: File) => {
+  const proccessFile = (file: File | null) => {
     if (file) {
       const reader = new FileReader();
       // @ts-ignore
@@ -82,16 +92,17 @@ export default function UploadFile() {
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-    console.log(file, 'change');
-    if (file) {
+    const targetFile = e.target.files && e.target.files[0];
+    // console.log(file, 'change');
+    if (targetFile) {
+      try {
+        // @ts-ignore
+        setFile(targetFile);
+      } catch (error) {}
       // @ts-ignore
-      proccessFile(file);
+      proccessFile(targetFile);
     }
   };
-  useEffect(() => {
-    console.log('jsr');
-  }, [pass, pdfText, handleChange]);
 
   return (
     <div className='grid mx-auto w-full max-w-sm items-center gap-1.5'>
@@ -101,8 +112,32 @@ export default function UploadFile() {
         type='file'
         accept='application/pdf'
         onChange={handleChange}
-        value={file ? file.name : ''}
+        value={''}
       />
+
+      <AlertDialog open={isPass} onOpenChange={setIsPass}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Enter Password</AlertDialogTitle>
+            <AlertDialogDescription>
+              The selected file is password protected, please provide password
+              to procced.
+              <Input
+                type='text'
+                onChange={(e) => setPass(e.target.value)}
+                value={pass}
+              />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => proccessFile(file)}>
+              Submit
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <pre className='overflow-hidden pt-10 text-sm'>{pdfText}</pre>
     </div>
   );
