@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { ToastContainer } from 'react-toastify';
 import Footer from './layout/Footer';
 import { ThemeBtn } from './layout/ThemeBtn';
 import { ThemeProvider } from './theme/ThemeProvider';
@@ -12,8 +13,9 @@ export default function AppContainer({ children }: AppContainerProp) {
       <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
         <ThemeBtn />
         {children}
+        <Footer />
+        <ToastContainer autoClose={2000} theme='dark' />
       </ThemeProvider>
-      <Footer />
     </>
   );
 }

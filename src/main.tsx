@@ -6,6 +6,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import App from './App.tsx';
 import Loader from './components/Loader.tsx';
 import './index.css';
+// minified version is also included
+import 'react-toastify/dist/ReactToastify.min.css';
 import store, { persistor } from './redux/store.ts';
 
 createRoot(document.getElementById('root')!).render(

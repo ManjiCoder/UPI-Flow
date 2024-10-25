@@ -3,6 +3,8 @@ import { useAppDispatch } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
 import * as PDFJS from 'pdfjs-dist';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 PDFJS.GlobalWorkerOptions.workerSrc = `${
@@ -10,11 +12,12 @@ PDFJS.GlobalWorkerOptions.workerSrc = `${
 }/pdf.worker.mjs`;
 
 export default function UploadFile() {
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
   const [pdfText, setPdfText] = useState('');
   const dispatch = useAppDispatch();
 
   const onSuccess = async (event: ProgressEvent<FileReader>) => {
+    const toastId = toast.loading('Processing...');
     try {
       if (!event.target || !event.target.result) return;
       const fileBuffer = event.target.result;
@@ -38,8 +41,25 @@ export default function UploadFile() {
       const rows = passbook(text);
       console.table(rows);
       dispatch(setRows(rows));
-      // navigator('/records');
+      toast.update(toastId, {
+        render: 'Text processed successfully',
+        type: 'success',
+        isLoading: false,
+        className: 'rotateY animated',
+        autoClose: 2000,
+        closeButton: true,
+      });
+      navigator('/records');
     } catch (error) {
+      toast.update(toastId, {
+        // @ts-ignore
+        render: error.message || 'Error occurred while extracting text',
+        type: 'error',
+        isLoading: false,
+        className: 'rotateY animated',
+        autoClose: 3000,
+        closeButton: true,
+      });
       console.error(error, 'Error occured while extacting text');
     }
   };
