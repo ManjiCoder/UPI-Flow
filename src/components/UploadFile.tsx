@@ -22,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Eye, EyeOff } from 'lucide-react';
+import { LucideEye, LucideEyeOff } from 'lucide-react';
 import { Button } from './ui/button';
 
 export default function UploadFile() {
@@ -168,15 +168,14 @@ export default function UploadFile() {
                 ref={inputRef}
               />
               <Button
-                type='button'
                 variant='link'
-                className='absolute right-0 top-0'
+                className='absolute z-10 right-0 top-0'
                 onClick={() => {
                   setIsOpen(!isOpen);
                   inputFocused();
                 }}
               >
-                {isOpen ? <Eye /> : <EyeOff />}
+                {isOpen ? <LucideEye /> : <LucideEyeOff />}
               </Button>
             </div>
 
