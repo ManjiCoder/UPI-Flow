@@ -165,10 +165,11 @@ export default function UploadFile() {
                 onChange={(e) => setPass(e.target.value)}
                 value={pass}
                 autoFocus={true}
+                ref={inputRef}
               />
               <Button
                 type='button'
-                variant={'ghost'}
+                variant='link'
                 className='absolute right-0 top-0'
                 onClick={() => {
                   setIsOpen(!isOpen);
