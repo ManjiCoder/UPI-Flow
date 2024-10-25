@@ -31,60 +31,70 @@ export default function UploadFile() {
   const [file, setFile] = useState<File | null>(null);
   const dispatch = useAppDispatch();
 
-  const onSuccess = async (event: ProgressEvent<FileReader>) => {
-    const toastId = toast.loading('Processing...');
-    try {
-      if (!event.target || !event.target.result) return;
-      const fileBuffer = event.target.result;
-      const data = await PDFJS.getDocument({
-        data: fileBuffer,
-        password: pass,
-      }).promise;
-      const totalPages = data.numPages;
+  const onSuccess = (event: ProgressEvent<FileReader>) => {
+    return new Promise(async (resolve, reject) => {
+      // const toastId = toast.loading('Processing...');
+      try {
+        if (!event.target || !event.target.result) return;
+        const fileBuffer = event.target.result;
+        const data = await PDFJS.getDocument({
+          data: fileBuffer,
+          password: pass,
+        }).promise;
+        const totalPages = data.numPages;
 
-      let text = '';
-      for (let i = 1; i <= totalPages; i++) {
-        const page = await data.getPage(i);
-        const pageText = await page.getTextContent();
-        // @ts-ignore
-        const textContext = pageText.items.map((obj) => obj.str).join('\n');
-        text += textContext;
+        let text = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const page = await data.getPage(i);
+          const pageText = await page.getTextContent();
+          // @ts-ignore
+          const textContext = pageText.items.map((obj) => obj.str).join('\n');
+          text += textContext;
+        }
+        setPdfText(text);
+        // console.log(text);
+        const rows = passbook(text);
+        console.table(rows);
+        if (!rows) {
+          return reject('PDF invalid for logic');
+          // return toast.update(toastId, {
+          //   render: 'PDF invalid for logic',
+          //   type: 'warning',
+          //   isLoading: false,
+          //   autoClose: 3000,
+          // });
+        }
+        dispatch(setRows(rows));
+        // toast.update(toastId, {
+        //   render: 'Text processed successfully',
+        //   type: 'success',
+        //   isLoading: false,
+        //   className: 'rotateY animated',
+        //   autoClose: 2000,
+        //   closeButton: true,
+        // });
+        navigator('/records');
+        resolve(rows);
+      } catch (error: any) {
+        // toast.update(toastId, {
+        //   // @ts-ignore
+        //   render: error.message || 'Error occurred while extracting text',
+        //   type: 'error',
+        //   isLoading: false,
+        //   className: 'rotateY animated',
+        //   autoClose: 3000,
+        //   closeButton: true,
+        // });
+        // console.error(error, 'Error occured while extacting text');
+
+        if (
+          ['No password given', 'Incorrect Password'].includes(error.message)
+        ) {
+          setIsPass(true);
+        }
+        reject(error);
       }
-      setPdfText(text);
-      // console.log(text);
-      const rows = passbook(text);
-      console.table(rows);
-      if (!rows) {
-        return toast.update(toastId, {
-          render: 'PDF invalid for logic',
-          type: 'warning',
-          isLoading: false,
-          autoClose: 3000,
-        });
-      }
-      dispatch(setRows(rows));
-      toast.update(toastId, {
-        render: 'Text processed successfully',
-        type: 'success',
-        isLoading: false,
-        className: 'rotateY animated',
-        autoClose: 2000,
-        closeButton: true,
-      });
-      navigator('/records');
-    } catch (error) {
-      toast.update(toastId, {
-        // @ts-ignore
-        render: error.message || 'Error occurred while extracting text',
-        type: 'error',
-        isLoading: false,
-        className: 'rotateY animated',
-        autoClose: 3000,
-        closeButton: true,
-      });
-      console.error(error, 'Error occured while extacting text');
-      setIsPass(true);
-    }
+    });
   };
 
   const proccessFile = (file: File | null) => {
@@ -94,7 +104,18 @@ export default function UploadFile() {
     // @ts-ignore
     reader.readAsArrayBuffer(file);
 
-    reader.onload = onSuccess;
+    reader.onload = (e) => {
+      const promise = onSuccess(e);
+      toast.promise(promise, {
+        pending: 'Processing...',
+        success: 'Text processed successfully',
+        error: {
+          render({ data }: any) {
+            return data.message || 'Error occured while reading file';
+          },
+        },
+      });
+    };
 
     reader.onerror = (error) => {
       console.error(error, 'Error occured while reading file');
