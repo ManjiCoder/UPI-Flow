@@ -3,7 +3,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
 import { File } from 'buffer';
 import * as PDFJS from 'pdfjs-dist';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Input } from './ui/input';
@@ -32,6 +32,13 @@ export default function UploadFile() {
   const [isPass, setIsPass] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const inputRef: any = useRef();
+
+  const inputFocused = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
   const dispatch = useAppDispatch();
 
   const onSuccess = (event: ProgressEvent<FileReader>) => {
@@ -123,7 +130,13 @@ export default function UploadFile() {
         value={''}
       />
 
-      <AlertDialog open={isPass} onOpenChange={setIsPass}>
+      <AlertDialog
+        open={isPass}
+        onOpenChange={(open) => {
+          setIsPass(open);
+          inputFocused();
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className='line-clamp-1'>
@@ -159,6 +172,7 @@ export default function UploadFile() {
                 className='absolute right-0 top-0'
                 onClick={() => {
                   setIsOpen(!isOpen);
+                  inputFocused();
                 }}
               >
                 {isOpen ? <Eye /> : <EyeOff />}
