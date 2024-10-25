@@ -1,8 +1,9 @@
 import { setRows } from '@/redux/features/UPI/paymentsSlices';
 import { useAppDispatch } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
+import { File } from 'buffer';
 import * as PDFJS from 'pdfjs-dist';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Input } from './ui/input';
@@ -14,6 +15,8 @@ PDFJS.GlobalWorkerOptions.workerSrc = `${
 export default function UploadFile() {
   const navigator = useNavigate();
   const [pdfText, setPdfText] = useState('');
+  const [pass, setPass] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
   const dispatch = useAppDispatch();
 
   const onSuccess = async (event: ProgressEvent<FileReader>) => {
@@ -61,13 +64,14 @@ export default function UploadFile() {
         closeButton: true,
       });
       console.error(error, 'Error occured while extacting text');
+      setPass(true);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
+  const proccessFile = (file: File) => {
     if (file) {
       const reader = new FileReader();
+      // @ts-ignore
       reader.readAsArrayBuffer(file);
 
       reader.onload = onSuccess;
@@ -77,6 +81,18 @@ export default function UploadFile() {
       };
     }
   };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    console.log(file, 'change');
+    if (file) {
+      // @ts-ignore
+      proccessFile(file);
+    }
+  };
+  useEffect(() => {
+    console.log('jsr');
+  }, [pass, pdfText, handleChange]);
+
   return (
     <div className='grid mx-auto w-full max-w-sm items-center gap-1.5'>
       <Label htmlFor='picture'>Select PDF</Label>
@@ -85,6 +101,7 @@ export default function UploadFile() {
         type='file'
         accept='application/pdf'
         onChange={handleChange}
+        value={file ? file.name : ''}
       />
       <pre className='overflow-hidden pt-10 text-sm'>{pdfText}</pre>
     </div>
