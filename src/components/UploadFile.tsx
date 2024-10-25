@@ -54,6 +54,14 @@ export default function UploadFile() {
       // console.log(text);
       const rows = passbook(text);
       console.table(rows);
+      if (!rows) {
+        return toast.update(toastId, {
+          render: 'PDF invalid for logic',
+          type: 'warning',
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
       dispatch(setRows(rows));
       toast.update(toastId, {
         render: 'Text processed successfully',
@@ -66,7 +74,8 @@ export default function UploadFile() {
       navigator('/records');
     } catch (error) {
       toast.update(toastId, {
-        render: 'Error occurred while extracting text',
+        // @ts-ignore
+        render: error.message || 'Error occurred while extracting text',
         type: 'error',
         isLoading: false,
         className: 'rotateY animated',
@@ -79,17 +88,17 @@ export default function UploadFile() {
   };
 
   const proccessFile = (file: File | null) => {
-    if (file) {
-      const reader = new FileReader();
-      // @ts-ignore
-      reader.readAsArrayBuffer(file);
+    if (!file) return toast.warn('File is missing.');
 
-      reader.onload = onSuccess;
+    const reader = new FileReader();
+    // @ts-ignore
+    reader.readAsArrayBuffer(file);
 
-      reader.onerror = (error) => {
-        console.error(error, 'Error occured while reading file');
-      };
-    }
+    reader.onload = onSuccess;
+
+    reader.onerror = (error) => {
+      console.error(error, 'Error occured while reading file');
+    };
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetFile = e.target.files && e.target.files[0];
@@ -118,17 +127,23 @@ export default function UploadFile() {
       <AlertDialog open={isPass} onOpenChange={setIsPass}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Enter Password</AlertDialogTitle>
-            <AlertDialogDescription>
-              The selected file is password protected, please provide password
-              to procced.
-              <Input
-                type='text'
-                onChange={(e) => setPass(e.target.value)}
-                value={pass}
-              />
+            <AlertDialogTitle className='line-clamp-1'>
+              Enter Password{' '}
+              <span className='font-normal'>
+                {file ? `for ${file.name}` : ''}
+              </span>
+            </AlertDialogTitle>
+            <AlertDialogDescription className='text-balance'>
+              The selected file: ${file?.name} is password protected, please
+              provide password to procced.
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <Input
+            type='password'
+            onChange={(e) => setPass(e.target.value)}
+            value={pass}
+            autoFocus={true}
+          />
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={() => proccessFile(file)}>
