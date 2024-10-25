@@ -10,7 +10,7 @@ import Loader from './components/Loader';
 const Home = lazy(() => import('./pages/Home'));
 const Records = lazy(() => import('./pages/Records'));
 const Analytics = lazy(() => import('./pages/Analytics'));
-const Test = lazy(() => import('./pages/Test'));
+const Test = lazy(() => import('./temp/Test'));
 
 export default function App() {
   return (
