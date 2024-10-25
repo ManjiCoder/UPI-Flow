@@ -22,6 +22,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Eye, EyeOff } from 'lucide-react';
+import { Button } from './ui/button';
 
 export default function UploadFile() {
   const navigator = useNavigate();
@@ -29,11 +31,11 @@ export default function UploadFile() {
   const [pass, setPass] = useState('');
   const [isPass, setIsPass] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   const onSuccess = (event: ProgressEvent<FileReader>) => {
     return new Promise(async (resolve, reject) => {
-      // const toastId = toast.loading('Processing...');
       try {
         if (!event.target || !event.target.result) return;
         const fileBuffer = event.target.result;
@@ -54,39 +56,14 @@ export default function UploadFile() {
         setPdfText(text);
         // console.log(text);
         const rows = passbook(text);
-        console.table(rows);
+        // console.table(rows);
         if (!rows) {
           return reject('PDF invalid for logic');
-          // return toast.update(toastId, {
-          //   render: 'PDF invalid for logic',
-          //   type: 'warning',
-          //   isLoading: false,
-          //   autoClose: 3000,
-          // });
         }
         dispatch(setRows(rows));
-        // toast.update(toastId, {
-        //   render: 'Text processed successfully',
-        //   type: 'success',
-        //   isLoading: false,
-        //   className: 'rotateY animated',
-        //   autoClose: 2000,
-        //   closeButton: true,
-        // });
         navigator('/records');
         resolve(rows);
       } catch (error: any) {
-        // toast.update(toastId, {
-        //   // @ts-ignore
-        //   render: error.message || 'Error occurred while extracting text',
-        //   type: 'error',
-        //   isLoading: false,
-        //   className: 'rotateY animated',
-        //   autoClose: 3000,
-        //   closeButton: true,
-        // });
-        // console.error(error, 'Error occured while extacting text');
-
         if (
           ['No password given', 'Incorrect Password'].includes(error.message)
         ) {
@@ -105,9 +82,9 @@ export default function UploadFile() {
     reader.readAsArrayBuffer(file);
 
     reader.onload = (e) => {
-      const promise = onSuccess(e);
-      toast.promise(promise, {
-        pending: 'Processing...',
+      const p = onSuccess(e);
+      toast.promise(p, {
+        pending: 'File is processing...',
         success: 'Text processed successfully',
         error: {
           render({ data }: any) {
@@ -121,6 +98,7 @@ export default function UploadFile() {
       console.error(error, 'Error occured while reading file');
     };
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetFile = e.target.files && e.target.files[0];
     // console.log(file, 'change');
@@ -155,22 +133,43 @@ export default function UploadFile() {
               </span>
             </AlertDialogTitle>
             <AlertDialogDescription className='text-balance'>
-              The selected file: ${file?.name} is password protected, please
-              provide password to procced.
+              The selected file: <b>{file?.name}</b> is password protected,
+              please provide password to procced.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <Input
-            type='password'
-            onChange={(e) => setPass(e.target.value)}
-            value={pass}
-            autoFocus={true}
-          />
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => proccessFile(file)}>
-              Submit
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (file) {
+                proccessFile(file);
+              }
+            }}
+            className='flex flex-col gap-y-4'
+          >
+            <div className='relative'>
+              <Input
+                type={isOpen ? 'text' : 'password'}
+                onChange={(e) => setPass(e.target.value)}
+                value={pass}
+                autoFocus={true}
+              />
+              <Button
+                type='button'
+                variant={'ghost'}
+                className='absolute right-0 top-0'
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                }}
+              >
+                {isOpen ? <Eye /> : <EyeOff />}
+              </Button>
+            </div>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction type='submit'>Submit</AlertDialogAction>
+            </AlertDialogFooter>
+          </form>
         </AlertDialogContent>
       </AlertDialog>
 
