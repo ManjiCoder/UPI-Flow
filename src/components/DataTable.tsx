@@ -211,8 +211,8 @@ export function DataTable({ data }: { data: Transaction[] }) {
   const newPages =
     pages.length > 8
       ? pages.slice(
-          Math.min(0 + page, pages.length - 8),
-          Math.min(pages.length, 8 + page)
+          Math.min(0 + page, pages.length - 6),
+          Math.min(pages.length, 6 + page)
         )
       : pages;
 
@@ -381,6 +381,7 @@ export function DataTable({ data }: { data: Transaction[] }) {
               variant={page === pageIdx ? 'secondary' : 'outline'}
               size='sm'
               onClick={() => table.setPageIndex(pageIdx)}
+              className='min-w-10'
             >
               {pageIdx + 1}
             </Button>
