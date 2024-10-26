@@ -53,7 +53,7 @@ export default function ShowRecords() {
             <ArrowRight />
           </Button>
         </h1>
-        <h3 className='flex text-2xl font-semibold justify-between'>
+        <h3 className='flex justify-between'>
           <span className='text-red-600 dark:text-red-400'>
             Expense:{' '}
             {totalExpense ? `${formattedAmount(totalExpense, true)}` : 0}
