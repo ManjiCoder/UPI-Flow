@@ -35,6 +35,13 @@ const extractRow = (arr: string[], id: number) => {
     .join('');
   payload.details = details;
 
+  if (details.trim().length === 0) {
+    payload.details = arr
+      .slice(1, n)
+      .filter((str) => /[a-z]/i.test(str))
+      .join('');
+  }
+
   // Setting referral number of transaction
   const refNo = details.includes(':')
     ? details.split(':')[0]

@@ -65,7 +65,7 @@ export default function UploadFile() {
         const rows = passbook(text);
         // console.table(rows);
         if (!rows) {
-          return reject('PDF invalid for logic');
+          return reject('Error occured while processing file');
         }
         dispatch(setRows(rows));
         navigator('/records');
@@ -177,6 +177,7 @@ export default function UploadFile() {
                 value={pass}
                 autoFocus={true}
                 ref={inputRef}
+                className='pr-10'
               />
               <Button
                 type='button'
