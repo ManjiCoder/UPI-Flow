@@ -39,11 +39,11 @@ export default function ShowRecords() {
       // @ts-ignore
       return x + y;
     }, 0);
-  // @ts-ignore
-  const totalBalance = totalIncome - totalExpense;
+  const totalBalance = (totalExpense || 0) - (totalIncome || 0);
+
   return (
     <div className='pb-6'>
-      <header className='flex  py-3 flex-col sticky top-0 backdrop-blur-sm pb-4 border-b-2 '>
+      <header className='flex  py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
         <h3 className='flex border-none justify-between'>
           <Button variant='ghost' onClick={decreamentYearMonth}>
             <ArrowLeft />
@@ -58,32 +58,40 @@ export default function ShowRecords() {
             <span>Expense </span>
             {totalExpense ? `${formattedAmount(totalExpense, true)}` : 0}
           </span>
-          <span className='text-green-600 dark:text-green-400 flex flex-col text-left'>
+          <span className='text-green-600 dark:text-green-400 flex flex-col text-center'>
             <span>Income</span>{' '}
             {totalIncome ? `${formattedAmount(totalIncome, true)}` : 0}
           </span>
-          <span className='text-primary flex flex-col text-left'>
+          <span className='text-primary flex flex-col text-right'>
             <span>Balance </span>
             {totalBalance ? `${formattedAmount(totalBalance, true)}` : 0}
           </span>
         </h4>
       </header>
       {filterData.map((row) => {
+        // @ts-ignore
+        const [_, receiver, msg] = row.details?.split('/');
         return (
-          <section key={row.id} className=''>
+          <section key={row.id} className='py-2 border-b-2'>
             <h5 className='text-lg font-semibold'>
               {format(row.date, 'MMM dd, EEEE')}
             </h5>
-            <section className='flex justify-between'>
-              <div>{row.mode}</div>
+            <section className='flex items-center justify-between'>
+              <div>
+                <p>
+                  {row.mode} - {receiver} - {msg}
+                </p>
+              </div>
               {row.credit ? (
                 <span className='text-green-600 dark:text-green-400 font-bold'>
                   {`${formattedAmount(row.credit, true)}`}
                 </span>
-              ) : (
+              ) : row.debit ? (
                 <span className='text-red-600 dark:text-red-400 font-bold'>
                   {`${formattedAmount(row.debit, true)}`}
                 </span>
+              ) : (
+                <span className='font-bold'>0</span>
               )}
             </section>
           </section>
