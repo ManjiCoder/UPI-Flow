@@ -95,7 +95,8 @@ export default function UploadFile() {
         success: 'Text processed successfully',
         error: {
           render({ data }: any) {
-            return data.message || 'Error occured while reading file';
+            // console.log(data);
+            return data.message || data || 'Error occured while reading file';
           },
         },
       });
@@ -142,7 +143,10 @@ export default function UploadFile() {
             <Button
               variant='ghost'
               className='absolute right-1 top-1 px-2 py-1 h-8'
-              onClick={() => setIsPass(false)}
+              onClick={() => {
+                setIsPass(false);
+                setPass('');
+              }}
             >
               <X />
             </Button>
@@ -164,7 +168,7 @@ export default function UploadFile() {
                 proccessFile(file);
               }
             }}
-            className='flex flex-col gap-y-4'
+            className='flex flex-col gap-y-10'
           >
             <div className='relative'>
               <Input
@@ -188,7 +192,9 @@ export default function UploadFile() {
             </div>
 
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel onClick={() => setPass('')}>
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction type='submit'>Submit</AlertDialogAction>
             </AlertDialogFooter>
           </form>
