@@ -357,6 +357,7 @@ export function DataTable({ data }: { data: Transaction[] }) {
             <DropdownMenuContent className='min-w-14'>
               {[5, 10, 15, 25, 50, 100, 500, 1000].map((pageSize) => (
                 <DropdownMenuItem
+                  key={pageSize}
                   className='cursor-pointer'
                   onClick={() => table.setPageSize(pageSize)}
                 >
@@ -378,6 +379,7 @@ export function DataTable({ data }: { data: Transaction[] }) {
           </Button>
           {newPages.map((pageIdx) => (
             <Button
+              key={pageIdx}
               variant={page === pageIdx ? 'secondary' : 'outline'}
               size='sm'
               onClick={() => table.setPageIndex(pageIdx)}
