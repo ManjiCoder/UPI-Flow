@@ -30,6 +30,13 @@ export default function ShowRecords() {
   };
   const filterData = useMemo(() => data.filter(filterByyearMonth), [yearMonth]);
 
+  // @ts-ignore
+  const filterByDate: Transaction = filterData.reduce((acc, item) => {
+    // @ts-ignore
+    const arr = (acc[item.date] ||= []);
+    arr.push(item);
+    return acc;
+  }, {});
   const totalExpense = filterData
     .map(({ debit }) => debit)
     .filter(Boolean)
@@ -74,48 +81,54 @@ export default function ShowRecords() {
           </span>
         </h4>
       </header>
-      {filterData.map((row) => {
-        // @ts-ignore
-        const [_, receiver, msg] = row.details?.split('/');
-        return (
-          <section key={row.id} className='py-2 border-b-2'>
-            <h5 className='text-lg font-semibold'>
-              {format(row.date, 'MMM dd, EEEE')}
-            </h5>
-            <section className='flex items-center justify-between'>
-              <div className='flex space-x-2 items-center'>
-                {/* Icon */}
-                <p className='row-span-2'>
-                  <LucideIndianRupee />
-                </p>
-                <div className='flex flex-col gap-y-0.5 justify-start'>
-                  {/* Receiver */}
-                  <p className='flex items-center gap-x-1'>
-                    <UserCheck size={16} />
-                    {receiver}
-                  </p>
-                  <p className='text-sm flex items-center gap-x-1'>
-                    <LucideChevronsUp size={16} />
-                    {row.mode}
-                  </p>
-                  {/* Mode */}
-                </div>
-              </div>
-              {row.credit ? (
-                <span className='text-green-600 dark:text-green-400 font-bold'>
-                  {`${formattedAmount(row.credit, true)}`}
-                </span>
-              ) : row.debit ? (
-                <span className='text-red-600 dark:text-red-400 font-bold'>
-                  {`${formattedAmount(row.debit, true)}`}
-                </span>
-              ) : (
-                <span className='font-bold'>0</span>
-              )}
+      <div className='flex flex-col gap-y-5'>
+        {Object.entries(filterByDate).map(([date, item], idx, arr) => {
+          return (
+            <section key={date} className='py-3 border-b-2'>
+              <h5 className='text-lg font-semibold'>
+                {format(date, 'MMM dd, EEEE')}
+              </h5>
+              {item.map((row: Transaction) => {
+                // @ts-ignore
+                const [_, receiver, msg] = row.details?.split('/');
+                return (
+                  <section className='flex py-2 items-center justify-between border-t'>
+                    <div className='flex space-x-2 items-center'>
+                      {/* Icon */}
+                      <p className='row-span-2'>
+                        <LucideIndianRupee />
+                      </p>
+                      <div className='flex flex-col gap-y-0.5 justify-start'>
+                        {/* Receiver */}
+                        <p className='flex items-center gap-x-1'>
+                          <UserCheck size={16} />
+                          {receiver}
+                        </p>
+                        <p className='text-sm flex items-center gap-x-1'>
+                          <LucideChevronsUp size={16} />
+                          {row.mode}
+                        </p>
+                        {/* Mode */}
+                      </div>
+                    </div>
+                    {row.credit ? (
+                      <span className='text-green-600 dark:text-green-400 font-bold'>
+                        {`${formattedAmount(row.credit, true)}`}
+                      </span>
+                    ) : row.debit ? (
+                      <span className='text-red-600 dark:text-red-400 font-bold'>
+                        {`${formattedAmount(row.debit, true)}`}
+                      </span>
+                    ) : (
+                      <span className='font-bold'>0</span>
+                    )}
+                  </section>
+                );
+              })}
             </section>
-          </section>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
