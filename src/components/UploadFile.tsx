@@ -22,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { LucideEye, LucideEyeOff } from 'lucide-react';
+import { LucideEye, LucideEyeOff, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 export default function UploadFile() {
@@ -139,6 +139,13 @@ export default function UploadFile() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
+            <Button
+              variant='ghost'
+              className='absolute right-1 top-1 px-2 py-1 h-8'
+              onClick={() => setIsPass(false)}
+            >
+              <X />
+            </Button>
             <AlertDialogTitle className='line-clamp-1'>
               Enter Password{' '}
               <span className='font-normal'>
@@ -168,6 +175,7 @@ export default function UploadFile() {
                 ref={inputRef}
               />
               <Button
+                type='button'
                 variant='link'
                 className='absolute z-10 right-0 top-0'
                 onClick={() => {
