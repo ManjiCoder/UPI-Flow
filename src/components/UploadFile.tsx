@@ -168,7 +168,7 @@ export default function UploadFile() {
                 proccessFile(file);
               }
             }}
-            className='flex flex-col gap-y-10'
+            className='flex flex-col gap-y-4'
           >
             <div className='relative'>
               <Input
