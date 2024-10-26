@@ -82,10 +82,10 @@ export default function ShowRecords() {
         </h4>
       </header>
       <div className='flex flex-col gap-y-5'>
-        {Object.entries(filterByDate).map(([date, item], idx, arr) => {
+        {Object.entries(filterByDate).map(([date, item]) => {
           return (
             <section key={date} className='py-3 border-b-2'>
-              <h5 className='text-lg font-semibold'>
+              <h5 className='text-lg font-semibold mb-2'>
                 {format(date, 'MMM dd, EEEE')}
               </h5>
               {item.map((row: Transaction) => {
