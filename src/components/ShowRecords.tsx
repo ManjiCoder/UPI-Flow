@@ -2,7 +2,13 @@ import { useAppSelector } from '@/redux/hooks';
 import { Transaction } from '@/types/constant';
 import { formattedAmount } from '@/utils/helper';
 import { addMonths, format, subMonths } from 'date-fns';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  LucideChevronsUp,
+  LucideIndianRupee,
+  UserCheck,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from './ui/button';
 
@@ -77,10 +83,23 @@ export default function ShowRecords() {
               {format(row.date, 'MMM dd, EEEE')}
             </h5>
             <section className='flex items-center justify-between'>
-              <div>
-                <p>
-                  {row.mode} - {receiver} - {msg}
+              <div className='flex space-x-2 items-center'>
+                {/* Icon */}
+                <p className='row-span-2'>
+                  <LucideIndianRupee />
                 </p>
+                <div className='flex flex-col gap-y-0.5 justify-start'>
+                  {/* Receiver */}
+                  <p className='flex items-center gap-x-1'>
+                    <UserCheck size={16} />
+                    {receiver}
+                  </p>
+                  <p className='text-sm flex items-center gap-x-1'>
+                    <LucideChevronsUp size={16} />
+                    {row.mode}
+                  </p>
+                  {/* Mode */}
+                </div>
               </div>
               {row.credit ? (
                 <span className='text-green-600 dark:text-green-400 font-bold'>
