@@ -42,9 +42,9 @@ export default function ShowRecords() {
   // @ts-ignore
   const totalBalance = totalIncome - totalExpense;
   return (
-    <div>
+    <div className='pb-6'>
       <header className='flex  py-3 flex-col sticky top-0 backdrop-blur-sm pb-4 border-b-2 '>
-        <h1 className='flex border-none justify-between'>
+        <h3 className='flex border-none justify-between'>
           <Button variant='ghost' onClick={decreamentYearMonth}>
             <ArrowLeft />
           </Button>
@@ -52,20 +52,21 @@ export default function ShowRecords() {
           <Button variant='ghost' onClick={incrementYearMonth}>
             <ArrowRight />
           </Button>
-        </h1>
-        <h3 className='flex justify-between'>
-          <span className='text-red-600 dark:text-red-400'>
-            Expense:{' '}
+        </h3>
+        <h4 className='flex justify-between'>
+          <span className='text-red-600 dark:text-red-400 flex flex-col text-left'>
+            <span>Expense </span>
             {totalExpense ? `${formattedAmount(totalExpense, true)}` : 0}
           </span>
-          <span className='text-green-600 dark:text-green-400'>
-            Income: {totalIncome ? `${formattedAmount(totalIncome, true)}` : 0}
+          <span className='text-green-600 dark:text-green-400 flex flex-col text-left'>
+            <span>Income</span>{' '}
+            {totalIncome ? `${formattedAmount(totalIncome, true)}` : 0}
           </span>
-          <span className='text-primary'>
-            Balance:{' '}
+          <span className='text-primary flex flex-col text-left'>
+            <span>Balance </span>
             {totalBalance ? `${formattedAmount(totalBalance, true)}` : 0}
           </span>
-        </h3>
+        </h4>
       </header>
       {filterData.map((row) => {
         return (
