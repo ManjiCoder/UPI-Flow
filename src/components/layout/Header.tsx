@@ -9,7 +9,7 @@ export default function Header() {
     <nav className='flex justify-between px-6 sm:px-20 py-4'>
       <section className='flex space-x-20 items-center'>
         <Link to='/'>
-          <h3 className='text-primary border-none pb-0'>{appInfo.title}</h3>
+          <h3 className='text-brand border-none pb-0'>{appInfo.title}</h3>
         </Link>
         <ol className='hidden sm:flex py-3 gap-3 space-x-5'>
           {footerOption.map(({ name, href }) => {
