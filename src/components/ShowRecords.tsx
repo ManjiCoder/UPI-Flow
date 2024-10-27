@@ -10,7 +10,6 @@ import {
   LucideCornerUpRight,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Button } from './ui/button';
 
 export default function ShowRecords() {
   const data = useAppSelector((state) => state.payments);
@@ -59,13 +58,9 @@ export default function ShowRecords() {
     <div className='pb-6'>
       <header className='flex  py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
         <h3 className='flex border-none justify-between'>
-          <Button variant='ghost' onClick={decreamentYearMonth}>
-            <ArrowLeft />
-          </Button>
+          <ArrowLeft role='button' size={26} onClick={decreamentYearMonth} />
           {format(new Date(yearMonth), 'MMMM, yyyy')}
-          <Button variant='ghost' onClick={incrementYearMonth}>
-            <ArrowRight />
-          </Button>
+          <ArrowRight role='button' size={26} onClick={incrementYearMonth} />
         </h3>
         <h4 className='flex justify-between'>
           <div className='flex flex-col text-left'>
@@ -103,7 +98,9 @@ export default function ShowRecords() {
               </h5>
               {item.map((row: Transaction) => {
                 // @ts-ignore
-                const [_, receiver, msg] = row.details?.split('/');
+                let [_, receiver, msg, info] = row.details?.split('/');
+                receiver = /[a-z]/i.test(receiver) ? receiver : info;
+
                 return (
                   <section className='flex py-2 items-center justify-between border-t'>
                     <div className='flex space-x-2 items-center'>
