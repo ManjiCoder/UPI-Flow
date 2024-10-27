@@ -52,8 +52,9 @@ export default function ShowRecords() {
       // @ts-ignore
       return x + y;
     }, 0);
-  const totalBalance = (totalExpense || 0) - (totalIncome || 0);
-
+  const totalBalance = (totalIncome || 0) - (totalExpense || 0);
+  const isBalancePositive =
+    Math.sign(totalBalance) === 1 || Math.sign(totalBalance) === 0;
   return (
     <div className='pb-6'>
       <header className='flex  py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
@@ -67,18 +68,30 @@ export default function ShowRecords() {
           </Button>
         </h3>
         <h4 className='flex justify-between'>
-          <span className='text-red-600 dark:text-red-400 flex flex-col text-left'>
+          <div className='flex flex-col text-left'>
             <span>Expense </span>
-            {totalExpense ? `${formattedAmount(totalExpense, true)}` : 0}
-          </span>
-          <span className='text-green-600 dark:text-green-400 flex flex-col text-center'>
-            <span>Income</span>{' '}
-            {totalIncome ? `${formattedAmount(totalIncome, true)}` : 0}
-          </span>
-          <span className='text-primary flex flex-col text-right'>
+            <span className='text-red-600 dark:text-red-400 '>
+              {totalExpense ? `${formattedAmount(totalExpense, true)}` : 0}
+            </span>
+          </div>
+          <div className='flex flex-col text-center'>
+            <span>Income</span>
+            <span className='text-green-600 dark:text-green-400 '>
+              {totalIncome ? `${formattedAmount(totalIncome, true)}` : 0}
+            </span>
+          </div>
+          <div className='flex flex-col text-right'>
             <span>Balance </span>
-            {totalBalance ? `${formattedAmount(totalBalance, true)}` : 0}
-          </span>
+            <span
+              className={
+                isBalancePositive
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
+              }
+            >
+              {totalBalance ? `${formattedAmount(totalBalance, true)}` : 0}
+            </span>
+          </div>
         </h4>
       </header>
       <div className='flex flex-col gap-y-5'>
@@ -113,11 +126,11 @@ export default function ShowRecords() {
                     </div>
                     {row.credit ? (
                       <span className='text-green-600 dark:text-green-400 font-bold'>
-                        {`${formattedAmount(row.credit, true)}`}
+                        {`+${formattedAmount(row.credit, true)}`}
                       </span>
                     ) : row.debit ? (
                       <span className='text-red-600 dark:text-red-400 font-bold'>
-                        {`${formattedAmount(row.debit, true)}`}
+                        {`-${formattedAmount(row.debit, true)}`}
                       </span>
                     ) : (
                       <span className='font-bold'>0</span>
