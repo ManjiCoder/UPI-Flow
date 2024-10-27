@@ -26,8 +26,8 @@ export const footerOption = [
 export default function Footer() {
   const { pathname: pathName } = useLocation();
   return (
-    <footer className='block sm:hidden'>
-      <ol className='fixed z-10 backdrop-blur-md bottom-0 w-full border-t-[1px] border-slate-600 flex justify-evenly py-3 gap-3'>
+    <footer className=''>
+      <ol className='flex sm:hidden fixed z-10 backdrop-blur-md bottom-0 w-full border-t-[1px] border-slate-600 justify-evenly py-3 gap-3'>
         {footerOption.map(({ name, href, icon }) => {
           const isActive = pathName === href;
           return (
@@ -44,6 +44,9 @@ export default function Footer() {
           );
         })}
       </ol>
+      {/* <p className='text-center pb-3'>
+        &copy; {new Date().getFullYear()} All rights reversed | upi-flow.com
+      </p> */}
     </footer>
   );
 }

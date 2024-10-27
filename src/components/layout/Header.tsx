@@ -7,11 +7,11 @@ export default function Header() {
   const { pathname: pathName } = useLocation();
   return (
     <nav className='flex justify-between px-5 sm:px-20 py-4'>
-      <section className='flex space-x-10 items-start'>
+      <section className='flex space-x-20 items-center'>
         <Link to='/'>
           <h3 className='border-none pb-0'>{appInfo.title}</h3>
         </Link>
-        <ol className='hidden sm:flex py-3 gap-3'>
+        <ol className='hidden sm:flex py-3 gap-3 space-x-5'>
           {footerOption.map(({ name, href }) => {
             const isActive = pathName === href;
             return (
@@ -21,14 +21,14 @@ export default function Header() {
                 className={`${isActive && 'text-primary'}`}
               >
                 <li className='flex gap-2 place-items-center'>
-                  <span className='text-xs font-semibold'>{name}</span>
+                  <span className='text-base'>{name}</span>
                 </li>
               </NavLink>
             );
           })}
         </ol>
       </section>
-      <section>
+      <section className='flex items-center'>
         {/* Search Bar */}
         <ThemeBtn />
       </section>
