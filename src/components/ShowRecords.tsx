@@ -60,8 +60,8 @@ export default function ShowRecords() {
     Math.sign(totalBalance) === 1 || Math.sign(totalBalance) === 0;
   return (
     <div className='pb-6'>
-      <header className='flex  py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
-        <h3 className='flex border-none justify-between'>
+      <header className='flex py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
+        <h3 className='flex border-none justify-between mb-2'>
           <ArrowLeft role='button' size={26} onClick={decreamentYearMonth} />
           {format(new Date(yearMonth), 'MMMM, yyyy')}
           <ArrowRight role='button' size={26} onClick={incrementYearMonth} />
