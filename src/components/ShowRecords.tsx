@@ -62,7 +62,7 @@ export default function ShowRecords() {
           <Button variant='ghost' onClick={decreamentYearMonth}>
             <ArrowLeft />
           </Button>
-          {format(new Date(yearMonth), 'MMM-yyyy')}
+          {format(new Date(yearMonth), 'MMMM, yyyy')}
           <Button variant='ghost' onClick={incrementYearMonth}>
             <ArrowRight />
           </Button>
