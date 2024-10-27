@@ -10,7 +10,7 @@ export default function PageWrapper({ children, className }: PageWrapperProps) {
   return (
     <div
       className={twMerge(
-        'flex flex-col min-h-screen p-5 pb-20 gap-16 sm:p-20',
+        'flex flex-col min-h-screen p-6 pb-20 gap-16 sm:p-20',
         className
       )}
     >

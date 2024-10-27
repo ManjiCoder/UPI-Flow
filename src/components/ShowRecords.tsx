@@ -32,12 +32,14 @@ export default function ShowRecords() {
   const filterData = useMemo(() => data.filter(filterByyearMonth), [yearMonth]);
 
   // @ts-ignore
-  const filterByDate: Transaction = filterData.reduce((acc, item) => {
-    // @ts-ignore
-    const arr = (acc[item.date] ||= []);
-    arr.push(item);
-    return acc;
-  }, {});
+  const filterByDate: Transaction = filterData
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .reduce((acc, item) => {
+      // @ts-ignore
+      const arr = (acc[item.date] ||= []);
+      arr.unshift(item);
+      return acc;
+    }, {});
   const totalExpense = filterData
     .map(({ debit }) => debit)
     .filter(Boolean)
@@ -104,7 +106,10 @@ export default function ShowRecords() {
                 receiver = /[a-z]/i.test(receiver) ? receiver : info;
 
                 return (
-                  <section className='flex py-2 items-center justify-between border-t'>
+                  <section
+                    key={row.id}
+                    className='flex py-2 items-center justify-between border-t'
+                  >
                     <div className='flex space-x-2 items-center'>
                       {/* Icon */}
                       <p className='row-span-2'>
