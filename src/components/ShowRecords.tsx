@@ -10,6 +10,8 @@ import {
   LucideCornerUpRight,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from './ui/button';
 
 export default function ShowRecords() {
   const data = useAppSelector((state) => state.payments);
@@ -138,6 +140,16 @@ export default function ShowRecords() {
             </section>
           );
         })}
+        {Object.keys(filterByDate).length === 0 && (
+          <div className='flex flex-col gap-y-3 py-5 space-x-2 items-center justify-center'>
+            <h4>No record in this month.</h4>
+            <Link to='/'>
+              <Button variant='secondary' className='text-lg'>
+                Click here to add
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

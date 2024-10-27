@@ -10,7 +10,7 @@ type AppContainerProp = {
 export default function AppContainer({ children }: AppContainerProp) {
   return (
     <>
-      <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
+      <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
         <Header />
         {children}
         <Footer />
