@@ -20,6 +20,7 @@ export enum PaymentModes {
   OTHER = 'Other',
   Int = 'Interest',
 }
+
 export interface Transaction {
   id: number;
   date: string;

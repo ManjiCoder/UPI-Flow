@@ -5,9 +5,9 @@ import { addMonths, format, subMonths } from 'date-fns';
 import {
   ArrowLeft,
   ArrowRight,
-  LucideChevronsUp,
-  LucideIndianRupee,
-  UserCheck,
+  LucideBadgeIndianRupee,
+  LucideCornerLeftUp,
+  LucideCornerUpRight,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from './ui/button';
@@ -109,16 +109,16 @@ export default function ShowRecords() {
                     <div className='flex space-x-2 items-center'>
                       {/* Icon */}
                       <p className='row-span-2'>
-                        <LucideIndianRupee />
+                        <LucideBadgeIndianRupee />
                       </p>
                       <div className='flex flex-col gap-y-0.5 justify-start'>
                         {/* Receiver */}
                         <p className='flex items-center gap-x-1'>
-                          <UserCheck size={16} />
-                          {receiver}
+                          <LucideCornerUpRight size={16} />
+                          <span className='font-semibold'>{receiver}</span>
                         </p>
                         <p className='text-sm flex items-center gap-x-1'>
-                          <LucideChevronsUp size={16} />
+                          <LucideCornerLeftUp size={16} />
                           {row.mode}
                         </p>
                         {/* Mode */}
