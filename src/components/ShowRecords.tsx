@@ -15,53 +15,49 @@ import {
   LucideCornerUpRight,
   LucideListFilter,
 } from 'lucide-react';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 
 export default function ShowRecords() {
   const data = useAppSelector((state) => state.payments);
-  const { yearMonth } = useAppSelector((state) => state.dateSlice);
+  const { yearMonth, filterData, expense, income, balance } = useAppSelector(
+    (state) => state.dateSlice
+  );
   const dispatch = useDispatch();
-
-  const filterByyearMonth = ({ date }: Transaction) => {
-    return date.includes(yearMonth);
-  };
 
   useEffect(() => {
     dispatch(setFilterData(data));
   }, [data, yearMonth]);
 
-  const filterData = useMemo(() => data.filter(filterByyearMonth), [yearMonth]);
+  // // @ts-ignore
+  // const filterByDate: Transaction = filterData
+  //   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  //   .reduce((acc, item) => {
+  //     // @ts-ignore
+  //     const arr = (acc[item.date] ||= []);
+  //     arr.unshift(item);
+  //     return acc;
+  //   }, {});
+  // const totalExpense = filterData
+  //   .map(({ debit }) => debit)
+  //   .filter(Boolean)
+  //   .reduce((x, y) => {
+  //     // @ts-ignore
+  //     return x + y;
+  //   }, 0);
 
-  // @ts-ignore
-  const filterByDate: Transaction = filterData
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .reduce((acc, item) => {
-      // @ts-ignore
-      const arr = (acc[item.date] ||= []);
-      arr.unshift(item);
-      return acc;
-    }, {});
-  const totalExpense = filterData
-    .map(({ debit }) => debit)
-    .filter(Boolean)
-    .reduce((x, y) => {
-      // @ts-ignore
-      return x + y;
-    }, 0);
-
-  const totalIncome = filterData
-    .map(({ credit }) => credit)
-    .filter(Boolean)
-    .reduce((x, y) => {
-      // @ts-ignore
-      return x + y;
-    }, 0);
-  const totalBalance = (totalIncome || 0) - (totalExpense || 0);
+  // const totalIncome = filterData
+  //   .map(({ credit }) => credit)
+  //   .filter(Boolean)
+  //   .reduce((x, y) => {
+  //     // @ts-ignore
+  //     return x + y;
+  //   }, 0);
+  // const totalBalance = (totalIncome || 0) - (totalExpense || 0);
   const isBalancePositive =
-    Math.sign(totalBalance) === 1 || Math.sign(totalBalance) === 0;
+    Math.sign(balance) === 1 || Math.sign(balance) === 0;
   return (
     <div className='pb-6'>
       <header className='flex px-8 py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
@@ -88,13 +84,13 @@ export default function ShowRecords() {
           <div className='flex flex-col text-left'>
             <span>Expense </span>
             <span className='text-red-600 dark:text-red-400 '>
-              {totalExpense ? `${formattedAmount(totalExpense, true)}` : 0}
+              {`${formattedAmount(expense, true)}`}
             </span>
           </div>
           <div className='flex flex-col text-center'>
             <span>Income</span>
             <span className='text-green-600 dark:text-green-400 '>
-              {totalIncome ? `${formattedAmount(totalIncome, true)}` : 0}
+              {`${formattedAmount(income, true)}`}
             </span>
           </div>
           <div className='flex flex-col text-right'>
@@ -106,7 +102,7 @@ export default function ShowRecords() {
                   : 'text-red-600 dark:text-red-400'
               }
             >
-              {totalBalance ? `${formattedAmount(totalBalance, true)}` : 0}
+              {`${formattedAmount(balance, true)}`}
             </span>
           </div>
         </h4>
@@ -116,7 +112,7 @@ export default function ShowRecords() {
         />
       </header>
       <div className='flex flex-col gap-y-5'>
-        {Object.entries(filterByDate).map(([date, item]) => {
+        {Object.entries(filterData).map(([date, item]) => {
           return (
             <section key={date} className='py-3 border-b-2'>
               <h5 className='text-lg font-semibold mb-2'>
@@ -167,7 +163,7 @@ export default function ShowRecords() {
             </section>
           );
         })}
-        {Object.keys(filterByDate).length === 0 && (
+        {Object.keys(filterData).length === 0 && (
           <div className='flex flex-col gap-y-3 py-5 space-x-2 items-center justify-center'>
             <h4>No record in this month.</h4>
             <Link to='/'>

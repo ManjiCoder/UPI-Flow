@@ -4,7 +4,7 @@ import { addMonths, format, subMonths } from 'date-fns';
 
 const initialState = {
   yearMonth: format(new Date(), 'yyyy-MM'),
-  filterData: [],
+  filterData: {},
   expense: 0,
   income: 0,
   balance: 0,
@@ -30,8 +30,15 @@ const dateSlice = createSlice({
     },
     setFilterData: (state, action: PayloadAction<Transaction[]>) => {
       const data = action.payload;
-      const newData = data.filter(({ date }) => date.includes(state.yearMonth));
-      console.log(newData);
+      const newData = data
+        .filter(({ date }) => date.includes(state.yearMonth))
+        .reduce((acc, item) => {
+          // @ts-ignore
+          const arr = (acc[item.date] ||= []);
+          arr.push(item);
+          return acc;
+        }, {});
+      state.filterData = newData;
     },
   },
 });
