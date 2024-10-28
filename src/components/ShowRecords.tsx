@@ -1,6 +1,7 @@
 import {
   decrementYearMonth,
   incrementYearMonth,
+  setFilterData,
 } from '@/redux/features/Filter/dateSlice';
 import { useAppSelector } from '@/redux/hooks';
 import { Transaction } from '@/types/constant';
@@ -14,7 +15,7 @@ import {
   LucideCornerUpRight,
   LucideListFilter,
 } from 'lucide-react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
@@ -27,6 +28,10 @@ export default function ShowRecords() {
   const filterByyearMonth = ({ date }: Transaction) => {
     return date.includes(yearMonth);
   };
+
+  useEffect(() => {
+    dispatch(setFilterData(data));
+  }, [data, yearMonth]);
 
   const filterData = useMemo(() => data.filter(filterByyearMonth), [yearMonth]);
 
