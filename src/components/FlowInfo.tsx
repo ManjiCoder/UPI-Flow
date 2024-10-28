@@ -1,6 +1,6 @@
 import {
-  decrementYearMonth,
-  incrementYearMonth,
+  decrementDateFilter,
+  incrementDateFilter,
   setFilter,
   setFilterData,
 } from '@/redux/features/Filter/dateSlice';
@@ -23,18 +23,20 @@ import { FilterOption } from '@/types/constant';
 
 export default function FlowInfo() {
   const data = useAppSelector((state) => state.payments);
-  const { yearMonth, expense, income, balance, filter } = useAppSelector(
+  const { dateFilter, expense, income, balance, filter } = useAppSelector(
     (state) => state.dateSlice
   );
   const dispatch = useDispatch();
 
   const isBalancePositive =
     Math.sign(balance) === 1 || Math.sign(balance) === 0;
-  const selectedDate = format(new Date(yearMonth), 'MMMM, yyyy');
-
+  const selectedDate = format(new Date(dateFilter), 'MMMM, yyyy');
+  const handleFilter = (key: string) => {
+    dispatch(setFilter(key));
+  };
   useEffect(() => {
     dispatch(setFilterData(data));
-  }, [data, yearMonth]);
+  }, [data, dateFilter]);
 
   return (
     <header className='flex px-8 py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
@@ -44,7 +46,7 @@ export default function FlowInfo() {
           role='button'
           size={26}
           onClick={() => {
-            dispatch(decrementYearMonth());
+            dispatch(decrementDateFilter());
           }}
         />
         {selectedDate}
@@ -53,7 +55,7 @@ export default function FlowInfo() {
           role='button'
           size={26}
           onClick={() => {
-            dispatch(incrementYearMonth());
+            dispatch(incrementDateFilter());
           }}
         />
       </h3>
@@ -99,7 +101,7 @@ export default function FlowInfo() {
               <DropdownMenuItem
                 key={key}
                 className={key === filter ? 'bg-secondary' : ''}
-                onClick={() => dispatch(setFilter(key))}
+                onClick={() => handleFilter(key)}
               >
                 {value}
               </DropdownMenuItem>

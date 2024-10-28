@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { addMonths, format, subMonths } from 'date-fns';
 
 interface dateSliceState {
-  yearMonth: string;
+  dateFilter: string;
   filterData:
     | {
         [timeStamp: string]: Transaction[];
@@ -16,7 +16,7 @@ interface dateSliceState {
 }
 
 const initialState: dateSliceState = {
-  yearMonth: format(new Date(), 'yyyy-MM'),
+  dateFilter: format(new Date(), 'yyyy-MM'),
   filterData: {},
   filter: FilterOption.Monthly,
   expense: 0,
@@ -28,24 +28,27 @@ const dateSlice = createSlice({
   name: 'dateSlice',
   initialState,
   reducers: {
-    incrementYearMonth: (state) => {
-      const newYearMonth = format(
-        addMonths(new Date(state.yearMonth), 1),
+    incrementDateFilter: (state) => {
+      const dateFilter = format(
+        addMonths(new Date(state.dateFilter), 1),
         'yyyy-MM'
       );
-      state.yearMonth = newYearMonth;
+      state.dateFilter = dateFilter;
     },
-    decrementYearMonth: (state) => {
-      const newYearMonth = format(
-        subMonths(new Date(state.yearMonth), 1),
+    decrementDateFilter: (state) => {
+      const dateFilter = format(
+        subMonths(new Date(state.dateFilter), 1),
         'yyyy-MM'
       );
-      state.yearMonth = newYearMonth;
+      state.dateFilter = dateFilter;
+    },
+    setDateFiler: (state, action) => {
+      state.filter = action.payload;
     },
     setFilterData: (state, action: PayloadAction<Transaction[]>) => {
       const data = action.payload;
       const filterData = data.filter(({ date }) =>
-        date.includes(state.yearMonth)
+        date.includes(state.dateFilter)
       );
       const newData = filterData.reduce((acc, item) => {
         // @ts-ignore
@@ -80,8 +83,9 @@ const dateSlice = createSlice({
 });
 
 export const {
-  incrementYearMonth,
-  decrementYearMonth,
+  incrementDateFilter,
+  decrementDateFilter,
+  setDateFiler,
   setFilterData,
   setFilter,
 } = dateSlice.actions;
