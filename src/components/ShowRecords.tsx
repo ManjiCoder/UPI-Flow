@@ -31,31 +31,6 @@ export default function ShowRecords() {
     dispatch(setFilterData(data));
   }, [data, yearMonth]);
 
-  // // @ts-ignore
-  // const filterByDate: Transaction = filterData
-  //   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  //   .reduce((acc, item) => {
-  //     // @ts-ignore
-  //     const arr = (acc[item.date] ||= []);
-  //     arr.unshift(item);
-  //     return acc;
-  //   }, {});
-  // const totalExpense = filterData
-  //   .map(({ debit }) => debit)
-  //   .filter(Boolean)
-  //   .reduce((x, y) => {
-  //     // @ts-ignore
-  //     return x + y;
-  //   }, 0);
-
-  // const totalIncome = filterData
-  //   .map(({ credit }) => credit)
-  //   .filter(Boolean)
-  //   .reduce((x, y) => {
-  //     // @ts-ignore
-  //     return x + y;
-  //   }, 0);
-  // const totalBalance = (totalIncome || 0) - (totalExpense || 0);
   const isBalancePositive =
     Math.sign(balance) === 1 || Math.sign(balance) === 0;
   return (
