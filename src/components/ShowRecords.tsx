@@ -3,11 +3,12 @@ import { Transaction } from '@/types/constant';
 import { formattedAmount } from '@/utils/helper';
 import { addMonths, format, subMonths } from 'date-fns';
 import {
-  ArrowLeft,
-  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
   LucideBadgeIndianRupee,
   LucideCornerLeftUp,
   LucideCornerUpRight,
+  LucideListFilter,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -60,11 +61,21 @@ export default function ShowRecords() {
     Math.sign(totalBalance) === 1 || Math.sign(totalBalance) === 0;
   return (
     <div className='pb-6'>
-      <header className='flex py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
+      <header className='flex px-8 py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
         <h3 className='flex border-none justify-between mb-2'>
-          <ArrowLeft role='button' size={26} onClick={decreamentYearMonth} />
+          <ChevronLeft
+            className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
+            role='button'
+            size={26}
+            onClick={decreamentYearMonth}
+          />
           {format(new Date(yearMonth), 'MMMM, yyyy')}
-          <ArrowRight role='button' size={26} onClick={incrementYearMonth} />
+          <ChevronRight
+            className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
+            role='button'
+            size={26}
+            onClick={incrementYearMonth}
+          />
         </h3>
         <h4 className='flex justify-between'>
           <div className='flex flex-col text-left'>
@@ -92,6 +103,10 @@ export default function ShowRecords() {
             </span>
           </div>
         </h4>
+        <LucideListFilter
+          role='button'
+          className='absolute top-3 h-10 w-10 p-2 -right-2 hover:bg-secondary rounded-md'
+        />
       </header>
       <div className='flex flex-col gap-y-5'>
         {Object.entries(filterByDate).map(([date, item]) => {
