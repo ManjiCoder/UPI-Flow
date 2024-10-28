@@ -1,3 +1,4 @@
+import dateSlice from '@/redux/features/Filter/dateSlice';
 import paymentsSlice from '@/redux/features/UPI/paymentsSlices';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
@@ -21,6 +22,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   payments: paymentsSlice.reducer,
+  dateSlice: dateSlice,
 });
 
 // persistReducer should be here only else Types error will appears
