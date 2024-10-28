@@ -32,3 +32,12 @@ export interface Transaction {
   details?: string | null;
   amt?: number;
 }
+
+export enum FilterOption {
+  Daily = 'Daily',
+  Weekly = 'Weekly',
+  Monthly = 'Monthly',
+  ThreeMonths = '3 Months',
+  SixMonths = '6 Months',
+  Yearly = 'Yearly',
+}

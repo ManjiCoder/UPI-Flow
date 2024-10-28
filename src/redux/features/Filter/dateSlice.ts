@@ -1,4 +1,4 @@
-import { Transaction } from '@/types/constant';
+import { FilterOption, Transaction } from '@/types/constant';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { addMonths, format, subMonths } from 'date-fns';
 
@@ -9,6 +9,7 @@ interface dateSliceState {
         [timeStamp: string]: Transaction[];
       }
     | {};
+  filter: FilterOption;
   expense: number;
   income: number;
   balance: number;
@@ -17,6 +18,7 @@ interface dateSliceState {
 const initialState: dateSliceState = {
   yearMonth: format(new Date(), 'yyyy-MM'),
   filterData: {},
+  filter: FilterOption.Monthly,
   expense: 0,
   income: 0,
   balance: 0,
@@ -71,9 +73,16 @@ const dateSlice = createSlice({
       state.expense = totalExpense;
       state.balance = totalBalance;
     },
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    },
   },
 });
 
-export const { incrementYearMonth, decrementYearMonth, setFilterData } =
-  dateSlice.actions;
+export const {
+  incrementYearMonth,
+  decrementYearMonth,
+  setFilterData,
+  setFilter,
+} = dateSlice.actions;
 export default dateSlice.reducer;

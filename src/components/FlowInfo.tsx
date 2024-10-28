@@ -1,6 +1,7 @@
 import {
   decrementYearMonth,
   incrementYearMonth,
+  setFilter,
   setFilterData,
 } from '@/redux/features/Filter/dateSlice';
 import { useAppSelector } from '@/redux/hooks';
@@ -10,19 +11,30 @@ import { ChevronLeft, ChevronRight, LucideListFilter } from 'lucide-react';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { FilterOption } from '@/types/constant';
+
 export default function FlowInfo() {
   const data = useAppSelector((state) => state.payments);
-  const { yearMonth, expense, income, balance } = useAppSelector(
+  const { yearMonth, expense, income, balance, filter } = useAppSelector(
     (state) => state.dateSlice
   );
   const dispatch = useDispatch();
 
+  const isBalancePositive =
+    Math.sign(balance) === 1 || Math.sign(balance) === 0;
+  const selectedDate = format(new Date(yearMonth), 'MMMM, yyyy');
+
   useEffect(() => {
     dispatch(setFilterData(data));
   }, [data, yearMonth]);
-
-  const isBalancePositive =
-    Math.sign(balance) === 1 || Math.sign(balance) === 0;
 
   return (
     <header className='flex px-8 py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>
@@ -35,7 +47,7 @@ export default function FlowInfo() {
             dispatch(decrementYearMonth());
           }}
         />
-        {format(new Date(yearMonth), 'MMMM, yyyy')}
+        {selectedDate}
         <ChevronRight
           className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
           role='button'
@@ -71,10 +83,30 @@ export default function FlowInfo() {
           </span>
         </div>
       </h4>
-      <LucideListFilter
-        role='button'
-        className='absolute top-3 h-10 w-10 p-2 -right-2 hover:bg-secondary rounded-md'
-      />
+
+      <DropdownMenu>
+        <DropdownMenuTrigger className='absolute top-3 -right-2 outline-none'>
+          <LucideListFilter
+            role='button'
+            className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
+          />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className='absolute -right-5'>
+          <DropdownMenuLabel>Display Option</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {Object.entries(FilterOption).map(([key, value]) => {
+            return (
+              <DropdownMenuItem
+                key={key}
+                className={key === filter ? 'bg-secondary' : ''}
+                onClick={() => dispatch(setFilter(key))}
+              >
+                {value}
+              </DropdownMenuItem>
+            );
+          })}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
 }
