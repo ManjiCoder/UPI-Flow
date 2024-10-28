@@ -1,6 +1,13 @@
 import { FilterOption, Transaction } from '@/types/constant';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addMonths, format, subMonths } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addYears,
+  format,
+  subMonths,
+} from 'date-fns';
 
 interface dateSliceState {
   dateFilter: string;
@@ -16,7 +23,7 @@ interface dateSliceState {
 }
 
 const initialState: dateSliceState = {
-  dateFilter: format(new Date(), 'yyyy-MM'),
+  dateFilter: format(new Date(), 'MMMM, yyyy'),
   filterData: {},
   filter: FilterOption.Monthly,
   expense: 0,
@@ -29,34 +36,57 @@ const dateSlice = createSlice({
   initialState,
   reducers: {
     incrementDateFilter: (state) => {
-      const dateFilter = format(
-        addMonths(new Date(state.dateFilter), 1),
-        'yyyy-MM'
-      );
-      state.dateFilter = dateFilter;
+      let newDate;
+      switch (state.filter) {
+        case FilterOption.Daily:
+          newDate = format(
+            addDays(new Date(state.dateFilter), 1),
+            'MMM dd, yyyy'
+          );
+          break;
+        case FilterOption.Weekly:
+          newDate = format(addWeeks(new Date(state.dateFilter), 1), 'MMM dd');
+          break;
+        case FilterOption.ThreeMonths:
+          newDate = format(addMonths(new Date(state.dateFilter), 3), 'MMM');
+          break;
+        case FilterOption.SixMonths:
+          newDate = format(addMonths(new Date(state.dateFilter), 6), 'MMM');
+          break;
+        case FilterOption.Yearly:
+          newDate = format(addYears(new Date(state.dateFilter), 1), 'yyyy');
+          break;
+        default:
+          newDate = format(addWeeks(new Date(state.dateFilter), 1), 'yyyy-MM');
+          break;
+      }
+      console.log(newDate);
+      state.dateFilter = newDate;
     },
     decrementDateFilter: (state) => {
-      const dateFilter = format(
+      const newDate = format(
         subMonths(new Date(state.dateFilter), 1),
         'yyyy-MM'
       );
-      state.dateFilter = dateFilter;
+      state.dateFilter = newDate;
     },
     setDateFiler: (state, action) => {
       state.filter = action.payload;
     },
     setFilterData: (state, action: PayloadAction<Transaction[]>) => {
       const data = action.payload;
+      const dateFilterStr = format(state.dateFilter, 'yyyy-MM');
       const filterData = data.filter(({ date }) =>
-        date.includes(state.dateFilter)
+        date.includes(dateFilterStr)
       );
+      // console.log(filterData);
       const newData = filterData.reduce((acc, item) => {
         // @ts-ignore
         const arr = (acc[item.date] ||= []);
         arr.push(item);
         return acc;
       }, {});
-      state.filterData = newData;
+
       const totalIncome = filterData
         .map(({ credit }) => credit)
         .filter(Boolean)
@@ -72,6 +102,8 @@ const dateSlice = createSlice({
           return x + y;
         }, 0) as number;
       const totalBalance = (totalIncome || 0) - (totalExpense || 0);
+
+      state.filterData = newData;
       state.income = totalIncome;
       state.expense = totalExpense;
       state.balance = totalBalance;
