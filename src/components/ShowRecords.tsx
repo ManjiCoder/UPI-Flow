@@ -1,7 +1,11 @@
+import {
+  decrementYearMonth,
+  incrementYearMonth,
+} from '@/redux/features/Filter/dateSlice';
 import { useAppSelector } from '@/redux/hooks';
 import { Transaction } from '@/types/constant';
 import { formattedAmount } from '@/utils/helper';
-import { addMonths, format, subMonths } from 'date-fns';
+import { format } from 'date-fns';
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,26 +14,20 @@ import {
   LucideCornerUpRight,
   LucideListFilter,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 
 export default function ShowRecords() {
   const data = useAppSelector((state) => state.payments);
-  const [yearMonth, setYearMonth] = useState(() => {
-    return format(new Date(), 'yyyy-MM');
-  });
+  const { yearMonth } = useAppSelector((state) => state.dateSlice);
+  const dispatch = useDispatch();
+
   const filterByyearMonth = ({ date }: Transaction) => {
     return date.includes(yearMonth);
   };
-  const incrementYearMonth = () => {
-    const data = format(addMonths(new Date(yearMonth), 1), 'yyyy-MM');
-    setYearMonth(data);
-  };
-  const decreamentYearMonth = () => {
-    const data = format(subMonths(new Date(yearMonth), 1), 'yyyy-MM');
-    setYearMonth(data);
-  };
+
   const filterData = useMemo(() => data.filter(filterByyearMonth), [yearMonth]);
 
   // @ts-ignore
@@ -67,14 +65,18 @@ export default function ShowRecords() {
             className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
             role='button'
             size={26}
-            onClick={decreamentYearMonth}
+            onClick={() => {
+              dispatch(decrementYearMonth());
+            }}
           />
           {format(new Date(yearMonth), 'MMMM, yyyy')}
           <ChevronRight
             className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
             role='button'
             size={26}
-            onClick={incrementYearMonth}
+            onClick={() => {
+              dispatch(incrementYearMonth());
+            }}
           />
         </h3>
         <h4 className='flex justify-between'>
