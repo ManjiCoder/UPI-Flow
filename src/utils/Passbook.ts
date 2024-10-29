@@ -176,6 +176,7 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
     id: 0,
     date: '',
     balance: 0,
+    mode: 'upi',
   };
   const n = arr.length;
   const date = new Date(arr.slice(0, 2).join()).toISOString();
@@ -189,7 +190,7 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
     ? (payload.credit = payload.amt)
     : (payload.debit = payload.amt);
 
-  // setting refno
+  // setting refNo
   const refNo = arr.find((line) => /Reference Number/.test(line));
   if (refNo) {
     payload.refNo = refNo.split(': ')[1];
@@ -199,7 +200,22 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
     payload.refNo = transactionId?.split(': ')[1];
   }
 
-  console.log(payload.refNo);
+  // setting to receiver
+  const receiver = arr.find((line) => /VPA/.test(line));
+  if (receiver) {
+    payload.to = receiver.split(': ')[1];
+  }
+
+  const mode = Object.keys(PaymentModes).find((method) =>
+    arr[2].includes(method.replaceAll('_', '').toLowerCase())
+  );
+
+  if (mode) {
+    // @ts-ignore
+    payload.mode = PaymentModes[mode];
+  }
+
+  console.log(payload);
   return payload;
 };
 const generatePaytmRecords = (str: string, bankId: number) => {

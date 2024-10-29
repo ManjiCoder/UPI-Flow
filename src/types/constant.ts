@@ -20,6 +20,8 @@ export enum PaymentModes {
   CHEQUE = 'Cheque',
   OTHER = 'Other',
   Int = 'Interest',
+  IMPS = 'IMPS',
+  BANK = 'Bank',
 }
 
 export interface Transaction {

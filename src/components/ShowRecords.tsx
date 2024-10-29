@@ -27,6 +27,7 @@ export default function ShowRecords() {
                 // @ts-ignore
                 let [_, receiver, msg, info] = row.details?.split('/');
                 receiver = /[a-z]/i.test(receiver) ? receiver : info;
+                receiver = receiver ||= row.to;
 
                 return (
                   <section

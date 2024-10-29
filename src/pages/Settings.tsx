@@ -6,7 +6,7 @@ import { bank } from './temp/temp';
 export default function Settings() {
   useEffect(() => {
     const rows = passbook(bank);
-    // console.log(rows);
+    // console.table(rows.slice(0, 10));
   }, []);
 
   return (
