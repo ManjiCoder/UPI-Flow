@@ -19,7 +19,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { setFilter } from '@/redux/features/Filter/filterSlice';
 import { FilterOption } from '@/types/constant';
-import { addMonths, endOfWeek, format, startOfWeek } from 'date-fns';
+import {
+  addMonths,
+  endOfWeek,
+  format,
+  getDate,
+  lastDayOfMonth,
+  setDate,
+  startOfWeek,
+} from 'date-fns';
 
 export default function FlowInfo() {
   const data = useAppSelector((state) => state.payments);
@@ -52,14 +60,14 @@ export default function FlowInfo() {
         formattedDate = `${format(
           new Date(dateFilter),
           filter.format
-        )} - ${format(addMonths(new Date(dateFilter), 3), filter.format)}`;
+        )} - ${format(addMonths(new Date(dateFilter), 2), filter.format)}`;
         break;
 
       case FilterOption.SixMonths.name:
         formattedDate = `${format(
           new Date(dateFilter),
           filter.format
-        )} - ${format(addMonths(new Date(dateFilter), 6), filter.format)}`;
+        )} - ${format(addMonths(new Date(dateFilter), 5), filter.format)}`;
         break;
 
       case FilterOption.Yearly.name:
@@ -76,9 +84,47 @@ export default function FlowInfo() {
   const handleFilter = (key: string) => {
     dispatch(setFilter(key));
   };
+  const calculateFromToDate = () => {
+    let startDate;
+    let endDate;
+    switch (filter.name) {
+      case FilterOption.Daily.name:
+        startDate = new Date(showDate).toISOString();
+        endDate = startDate;
+        break;
+      case FilterOption.Weekly.name:
+        break;
+
+      case FilterOption.ThreeMonths.name:
+        startDate = setDate(dateFilter, 1).toISOString();
+        endDate = addMonths(
+          setDate(startDate, getDate(lastDayOfMonth(startDate))),
+          2
+        ).toISOString();
+        break;
+
+      case FilterOption.SixMonths.name:
+        startDate = setDate(dateFilter, 1).toISOString();
+        endDate = addMonths(startDate, 6).toISOString();
+        break;
+
+      default:
+        startDate = setDate(dateFilter, 1).toISOString();
+        endDate = setDate(
+          startDate,
+          getDate(lastDayOfMonth(startDate))
+        ).toISOString();
+        break;
+    }
+    return { startDate, endDate };
+  };
   useEffect(() => {
-    dispatch(setFilterData(data));
-  }, [data, dateFilter]);
+    const { startDate, endDate } = calculateFromToDate();
+    console.log(startDate, endDate);
+    if (startDate && endDate) {
+      dispatch(setFilterData({ data, startDate, endDate }));
+    }
+  }, [data, dateFilter, filter]);
 
   return (
     <header className='flex px-8 py-3 flex-col sticky top-0 backdrop-blur-sm border-b-2 mb-4'>

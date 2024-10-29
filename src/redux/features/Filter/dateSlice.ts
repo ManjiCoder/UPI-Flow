@@ -5,7 +5,10 @@ import {
   addMonths,
   addWeeks,
   addYears,
-  format,
+  isAfter,
+  isBefore,
+  isEqual,
+  parseISO,
   startOfWeek,
   subDays,
   subMonths,
@@ -91,12 +94,27 @@ const dateSlice = createSlice({
       }
       state.dateFilter = newDate;
     },
-    setFilterData: (state, action: PayloadAction<Transaction[]>) => {
-      const data = action.payload;
-      const dateFilterStr = format(state.dateFilter, 'yyyy-MM');
-      const filterData = data.filter(({ date }) =>
-        date.includes(dateFilterStr)
-      );
+    setFilterData: (
+      state,
+      action: PayloadAction<{
+        data: Transaction[];
+        startDate: string;
+        endDate: string;
+      }>
+    ) => {
+      const { data } = action.payload;
+      const startDate = parseISO(action.payload.startDate);
+      let endDate = parseISO(action.payload.endDate);
+      const filterData = data
+        .filter((item) => {
+          const date = parseISO(item.date);
+          return (
+            isEqual(date, startDate) ||
+            isEqual(date, endDate) ||
+            (isBefore(date, endDate) && isAfter(date, startDate))
+          );
+        })
+        .reverse();
       // console.log(filterData);
       const newData = filterData.reduce((acc, item) => {
         // @ts-ignore
