@@ -3,10 +3,10 @@ export enum appInfo {
   desc = 'UPIFlow simplifies tracking your UPI transactions, giving you clear insights into your spending.',
 }
 
-export enum banks {
-  icici = 'icicibank',
-  sbi = 'statebank',
-}
+export const banks = {
+  icici: { id: 1, name: 'icicibank' },
+  sbi: { id: 2, name: 'statebank' },
+};
 
 export enum PaymentModes {
   CASH = 'Cash',
@@ -31,7 +31,7 @@ export interface Transaction {
   refNo?: string | null;
   details?: string | null;
   amt?: number;
-  bankName?: string;
+  bankId?: number;
 }
 
 export const FilterOption = {

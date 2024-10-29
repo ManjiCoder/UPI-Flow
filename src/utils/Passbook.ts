@@ -18,7 +18,7 @@ const stringToNumber = (str: string) => {
   return parseFloat(str.replaceAll(',', ''));
 };
 
-const extractRow = (arr: string[], id: number, bankName: string) => {
+const extractRow = (arr: string[], id: number, bankId: number) => {
   const payload: Transaction = {
     id,
     date: '',
@@ -27,7 +27,7 @@ const extractRow = (arr: string[], id: number, bankName: string) => {
   const n = arr.length;
   payload.date = parse(arr[0], 'dd-MM-yyyy', new Date()).toISOString(); // Setting Date
   payload.balance = stringToNumber(arr[n - 1]); // Setting Balance
-  payload.bankName = bankName;
+  payload.bankId = bankId;
 
   // Setting Details
   const details = arr
@@ -84,7 +84,7 @@ const extractRow = (arr: string[], id: number, bankName: string) => {
   return payload;
 };
 
-export const generateICICIRecords = (str: string, bankName: string) => {
+export const generateICICIRecords = (str: string, bankId: number) => {
   try {
     const transactions: Transaction[] = [];
     const dateIdx: number[] = [];
@@ -128,7 +128,7 @@ export const generateICICIRecords = (str: string, bankName: string) => {
           }
         });
         const arr = lines.slice(currLine, lastBal + 1);
-        const rowData = extractRow(arr, transactions.length + 1, bankName);
+        const rowData = extractRow(arr, transactions.length + 1, bankId);
         transactions.push(rowData);
       } else {
         let arr = lines.slice(currLine, nextLine);
@@ -136,7 +136,7 @@ export const generateICICIRecords = (str: string, bankName: string) => {
           // @ts-ignore
           arr = arr.slice(arr, arr.indexOf('Page'));
         }
-        const rowData = extractRow(arr, transactions.length + 1, bankName);
+        const rowData = extractRow(arr, transactions.length + 1, bankId);
         transactions.push(rowData);
       }
     }
@@ -173,9 +173,9 @@ export const generateICICIRecords = (str: string, bankName: string) => {
 
 // Main Function
 function passbook(str: string) {
-  if (str.includes(banks.icici)) {
-    return generateICICIRecords(str, banks.icici);
-  } else if (str.includes(banks.sbi)) {
+  if (str.includes(banks.icici.name)) {
+    return generateICICIRecords(str, banks.icici.id);
+  } else if (str.includes(banks.sbi.name)) {
     // TODO: SBI Function
   }
 }
