@@ -89,7 +89,9 @@ export default function FlowInfo() {
     let endDate;
     switch (filter.name) {
       case FilterOption.Daily.name:
-        startDate = new Date(dateFilter).toISOString();
+        startDate = new Date(
+          new Date(dateFilter).setHours(0, 0, 0, 0)
+        ).toISOString();
         endDate = startDate;
         break;
 
