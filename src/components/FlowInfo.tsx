@@ -89,10 +89,18 @@ export default function FlowInfo() {
     let endDate;
     switch (filter.name) {
       case FilterOption.Daily.name:
-        startDate = new Date(showDate).toISOString();
+        startDate = new Date(dateFilter).toISOString();
         endDate = startDate;
         break;
+
       case FilterOption.Weekly.name:
+        startDate = startOfWeek(new Date(dateFilter), {
+          weekStartsOn: 0,
+        }).toISOString();
+
+        endDate = endOfWeek(new Date(dateFilter), {
+          weekStartsOn: 0,
+        }).toISOString();
         break;
 
       case FilterOption.ThreeMonths.name:
@@ -108,6 +116,11 @@ export default function FlowInfo() {
         endDate = addMonths(startDate, 6).toISOString();
         break;
 
+      case FilterOption.Yearly.name:
+        startDate = new Date(new Date(showDate).setMonth(1, 0)).toISOString();
+        endDate = new Date(new Date(showDate).setMonth(12, 0)).toISOString();
+        break;
+
       default:
         startDate = setDate(dateFilter, 1).toISOString();
         endDate = setDate(
@@ -120,7 +133,7 @@ export default function FlowInfo() {
   };
   useEffect(() => {
     const { startDate, endDate } = calculateFromToDate();
-    console.log(startDate, endDate);
+    // console.log(startDate, endDate);
     if (startDate && endDate) {
       dispatch(setFilterData({ data, startDate, endDate }));
     }
