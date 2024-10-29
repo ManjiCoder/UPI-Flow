@@ -2,6 +2,7 @@ import { FilterOption } from '@/types/constant';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = { filter: FilterOption.Monthly };
+
 const filterSlice = createSlice({
   name: 'filter',
   initialState,

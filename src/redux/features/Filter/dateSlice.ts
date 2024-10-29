@@ -6,6 +6,7 @@ import {
   addWeeks,
   addYears,
   format,
+  startOfWeek,
   subDays,
   subMonths,
   subWeeks,
@@ -45,6 +46,7 @@ const dateSlice = createSlice({
           break;
         case FilterOption.Weekly.name:
           newDate = addWeeks(new Date(state.dateFilter), 1).toISOString();
+          newDate = startOfWeek(newDate, { weekStartsOn: 0 }).toISOString();
           break;
         case FilterOption.ThreeMonths.name:
           newDate = addMonths(new Date(state.dateFilter), 3).toISOString();
@@ -71,6 +73,7 @@ const dateSlice = createSlice({
           break;
         case FilterOption.Weekly.name:
           newDate = subWeeks(new Date(state.dateFilter), 1).toISOString();
+          newDate = startOfWeek(newDate, { weekStartsOn: 0 }).toISOString();
           break;
         case FilterOption.ThreeMonths.name:
           newDate = subMonths(new Date(state.dateFilter), 3).toISOString();

@@ -6,7 +6,7 @@ import {
 import { useAppSelector } from '@/redux/hooks';
 import { formattedAmount } from '@/utils/helper';
 import { ChevronLeft, ChevronRight, LucideListFilter } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { setFilter } from '@/redux/features/Filter/filterSlice';
 import { FilterOption } from '@/types/constant';
-import { format } from 'date-fns';
+import { addMonths, endOfWeek, format, startOfWeek } from 'date-fns';
 
 export default function FlowInfo() {
   const data = useAppSelector((state) => state.payments);
@@ -32,7 +32,47 @@ export default function FlowInfo() {
   const isBalancePositive =
     Math.sign(balance) === 1 || Math.sign(balance) === 0;
 
-  const showDate = format(new Date(dateFilter), filter.format);
+  const showDate = useMemo(() => {
+    let formattedDate;
+    switch (filter.name) {
+      case FilterOption.Daily.name:
+        formattedDate = format(new Date(dateFilter), filter.format);
+        break;
+
+      case FilterOption.Weekly.name:
+        const d1 = startOfWeek(new Date(dateFilter), { weekStartsOn: 0 });
+        const d2 = endOfWeek(new Date(dateFilter), { weekStartsOn: 0 });
+        formattedDate = `${format(d1, filter.format)} - ${format(
+          d2,
+          filter.format
+        )}`;
+        break;
+
+      case FilterOption.ThreeMonths.name:
+        formattedDate = `${format(
+          new Date(dateFilter),
+          filter.format
+        )} - ${format(addMonths(new Date(dateFilter), 3), filter.format)}`;
+        break;
+
+      case FilterOption.SixMonths.name:
+        formattedDate = `${format(
+          new Date(dateFilter),
+          filter.format
+        )} - ${format(addMonths(new Date(dateFilter), 6), filter.format)}`;
+        break;
+
+      case FilterOption.Yearly.name:
+        formattedDate = format(new Date(dateFilter), filter.format);
+        break;
+
+      default:
+        formattedDate = format(new Date(dateFilter), filter.format);
+        break;
+    }
+    return formattedDate;
+  }, [filter, dateFilter]);
+
   const handleFilter = (key: string) => {
     dispatch(setFilter(key));
   };
