@@ -33,12 +33,11 @@ export interface Transaction {
   amt?: number;
 }
 
-export const FilterOption: { [key: string]: { name: string; format: string } } =
-  {
-    Daily: { name: 'Daily', format: 'MMM dd, yyyy' },
-    Weekly: { name: 'Weekly', format: 'MMM dd' },
-    Monthly: { name: 'Monthly', format: 'MMMM, yyyy' },
-    ThreeMonths: { name: '3 Months', format: 'MMM' },
-    SixMonths: { name: '6 Months', format: 'MMM' },
-    Yearly: { name: 'Yearly', format: 'yyyy' },
-  };
+export const FilterOption = {
+  Daily: { name: 'Daily', format: 'MMM dd, yyyy' },
+  Weekly: { name: 'Weekly', format: 'MMM dd' },
+  Monthly: { name: 'Monthly', format: 'MMMM, yyyy' },
+  ThreeMonths: { name: '3 Months', format: 'MMM, yy' },
+  SixMonths: { name: '6 Months', format: 'MMM, yy' },
+  Yearly: { name: 'Yearly', format: 'yyyy' },
+};

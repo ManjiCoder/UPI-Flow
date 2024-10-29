@@ -1,7 +1,6 @@
 import {
   decrementDateFilter,
   incrementDateFilter,
-  setFilter,
   setFilterData,
 } from '@/redux/features/Filter/dateSlice';
 import { useAppSelector } from '@/redux/hooks';
@@ -18,12 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { setFilter } from '@/redux/features/Filter/filterSlice';
 import { FilterOption } from '@/types/constant';
 import { format } from 'date-fns';
 
 export default function FlowInfo() {
   const data = useAppSelector((state) => state.payments);
-  const { dateFilter, expense, income, balance, filter } = useAppSelector(
+  const { filter } = useAppSelector((state) => state.filter);
+  const { dateFilter, expense, income, balance } = useAppSelector(
     (state) => state.dateSlice
   );
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ export default function FlowInfo() {
           role='button'
           size={26}
           onClick={() => {
-            dispatch(decrementDateFilter());
+            dispatch(decrementDateFilter(filter.name));
           }}
         />
         {showDate}
@@ -56,7 +57,7 @@ export default function FlowInfo() {
           role='button'
           size={26}
           onClick={() => {
-            dispatch(incrementDateFilter());
+            dispatch(incrementDateFilter(filter.name));
           }}
         />
       </h3>
@@ -101,7 +102,7 @@ export default function FlowInfo() {
             return (
               <DropdownMenuItem
                 key={key}
-                className={key === filter.name ? 'bg-secondary' : ''}
+                className={value.name === filter.name ? 'bg-secondary' : ''}
                 onClick={() => handleFilter(key)}
               >
                 {value.name}

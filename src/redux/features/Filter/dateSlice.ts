@@ -1,6 +1,16 @@
 import { FilterOption, Transaction } from '@/types/constant';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { format } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addYears,
+  format,
+  subDays,
+  subMonths,
+  subWeeks,
+  subYears,
+} from 'date-fns';
 FilterOption.Daily;
 interface dateSliceState {
   dateFilter: string;
@@ -9,10 +19,6 @@ interface dateSliceState {
         [timeStamp: string]: Transaction[];
       }
     | {};
-  filter: {
-    name: string;
-    format: string;
-  };
   expense: number;
   income: number;
   balance: number;
@@ -21,7 +27,6 @@ interface dateSliceState {
 const initialState: dateSliceState = {
   dateFilter: new Date().toISOString(),
   filterData: {},
-  filter: FilterOption.Monthly,
   expense: 0,
   income: 0,
   balance: 0,
@@ -31,11 +36,58 @@ const dateSlice = createSlice({
   name: 'dateSlice',
   initialState,
   reducers: {
-    incrementDateFilter: (state) => {
-      const key = state.filter;
-      console.log(key);
+    incrementDateFilter: (state, action) => {
+      const key = action.payload;
+      let newDate;
+      switch (key) {
+        case FilterOption.Daily.name:
+          newDate = addDays(new Date(state.dateFilter), 1).toISOString();
+          break;
+        case FilterOption.Weekly.name:
+          newDate = addWeeks(new Date(state.dateFilter), 1).toISOString();
+          break;
+        case FilterOption.ThreeMonths.name:
+          newDate = addMonths(new Date(state.dateFilter), 3).toISOString();
+          break;
+        case FilterOption.SixMonths.name:
+          newDate = addMonths(new Date(state.dateFilter), 6).toISOString();
+          break;
+        case FilterOption.Yearly.name:
+          newDate = addYears(new Date(state.dateFilter), 1).toISOString();
+          break;
+
+        default:
+          newDate = addMonths(new Date(state.dateFilter), 1).toISOString();
+          break;
+      }
+      state.dateFilter = newDate;
     },
-    decrementDateFilter: (state) => {},
+    decrementDateFilter: (state, action) => {
+      const key = action.payload;
+      let newDate;
+      switch (key) {
+        case FilterOption.Daily.name:
+          newDate = subDays(new Date(state.dateFilter), 1).toISOString();
+          break;
+        case FilterOption.Weekly.name:
+          newDate = subWeeks(new Date(state.dateFilter), 1).toISOString();
+          break;
+        case FilterOption.ThreeMonths.name:
+          newDate = subMonths(new Date(state.dateFilter), 3).toISOString();
+          break;
+        case FilterOption.SixMonths.name:
+          newDate = subMonths(new Date(state.dateFilter), 6).toISOString();
+          break;
+        case FilterOption.Yearly.name:
+          newDate = subYears(new Date(state.dateFilter), 1).toISOString();
+          break;
+
+        default:
+          newDate = subMonths(new Date(state.dateFilter), 1).toISOString();
+          break;
+      }
+      state.dateFilter = newDate;
+    },
     setFilterData: (state, action: PayloadAction<Transaction[]>) => {
       const data = action.payload;
       const dateFilterStr = format(state.dateFilter, 'yyyy-MM');
@@ -71,17 +123,9 @@ const dateSlice = createSlice({
       state.expense = totalExpense;
       state.balance = totalBalance;
     },
-    setFilter: (state, action) => {
-      const key = action.payload;
-      state.filter = FilterOption[key];
-    },
   },
 });
 
-export const {
-  incrementDateFilter,
-  decrementDateFilter,
-  setFilterData,
-  setFilter,
-} = dateSlice.actions;
+export const { incrementDateFilter, decrementDateFilter, setFilterData } =
+  dateSlice.actions;
 export default dateSlice.reducer;

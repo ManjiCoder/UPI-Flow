@@ -1,4 +1,5 @@
 import dateSlice from '@/redux/features/Filter/dateSlice';
+import filterSlice from '@/redux/features/Filter/filterSlice';
 import paymentsSlice from '@/redux/features/UPI/paymentsSlices';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
@@ -17,12 +18,13 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['payments'],
+  whitelist: ['payments', 'filter'],
 };
 
 const rootReducer = combineReducers({
   payments: paymentsSlice.reducer,
   dateSlice: dateSlice,
+  filter: filterSlice,
 });
 
 // persistReducer should be here only else Types error will appears
