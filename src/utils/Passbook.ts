@@ -215,7 +215,7 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
     payload.mode = PaymentModes[mode];
   }
 
-  console.log(payload);
+  // console.log(payload);
   return payload;
 };
 const generatePaytmRecords = (str: string, bankId: number) => {
@@ -242,6 +242,12 @@ const generatePaytmRecords = (str: string, bankId: number) => {
 
       if (!nextLine) {
         // console.log(currLine, nextLine);
+        const plusOrMinusIdx = lines.findIndex(
+          (line) => line.includes('+') || line.includes('-')
+        );
+        const arr = lines.slice(currLine, currLine + plusOrMinusIdx + 3);
+        const row = extractRowPaytm(arr, transactions.length, bankId);
+        transactions.push(row);
       } else {
         const arr = lines.slice(currLine, nextLine).slice(0, 10);
         const row = extractRowPaytm(arr, transactions.length, bankId);
