@@ -215,6 +215,8 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
     payload.mode = PaymentModes[mode];
   }
 
+  payload.id = id;
+  payload.bankId = bankId;
   // console.log(payload);
   return payload;
 };
