@@ -101,10 +101,10 @@ export default function FlowInfo() {
             return (
               <DropdownMenuItem
                 key={key}
-                className={key === filter ? 'bg-secondary' : ''}
+                className={key === filter.name ? 'bg-secondary' : ''}
                 onClick={() => handleFilter(key)}
               >
-                {value}
+                {value.name}
               </DropdownMenuItem>
             );
           })}

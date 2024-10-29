@@ -8,7 +8,7 @@ import {
   format,
   subMonths,
 } from 'date-fns';
-
+FilterOption.Daily;
 interface dateSliceState {
   dateFilter: string;
   filterData:
@@ -16,7 +16,10 @@ interface dateSliceState {
         [timeStamp: string]: Transaction[];
       }
     | {};
-  filter: FilterOption;
+  filter: {
+    name: string;
+    format: string;
+  };
   expense: number;
   income: number;
   balance: number;
@@ -71,7 +74,8 @@ const dateSlice = createSlice({
       state.dateFilter = newDate;
     },
     setDateFiler: (state, action) => {
-      state.filter = action.payload;
+      // state.dateFilter = action.payload;
+      console.log(action.payload);
     },
     setFilterData: (state, action: PayloadAction<Transaction[]>) => {
       const data = action.payload;
@@ -109,7 +113,8 @@ const dateSlice = createSlice({
       state.balance = totalBalance;
     },
     setFilter: (state, action) => {
-      state.filter = action.payload;
+      const key = action.payload;
+      state.filter = FilterOption[key];
     },
   },
 });
