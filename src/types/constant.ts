@@ -33,6 +33,7 @@ export interface Transaction {
   details?: string | null;
   amt?: number;
   bankId?: number;
+  to?: string;
 }
 
 export const FilterOption = {

@@ -171,6 +171,19 @@ const generateICICIRecords = (str: string, bankId: number) => {
   }
 };
 
+const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
+  const payload: Transaction = {
+    id: 0,
+    date: '',
+    balance: 0,
+  };
+  const date = new Date(arr.slice(0, 2).join()).toISOString();
+  payload.date = date; // setting date
+  payload.details = arr[arr.length - 1]; // settings details
+
+  console.log(arr);
+  return payload;
+};
 const generatePaytmRecords = (str: string, bankId: number) => {
   try {
     const transactions: Transaction[] = [];
@@ -187,9 +200,23 @@ const generatePaytmRecords = (str: string, bankId: number) => {
         dateIdx.push(i);
       }
     });
-    // console.log(lines);
 
-    console.log(dateIdx.map((val) => lines[val]));
+    for (let i = 0; i < dateIdx.length; i++) {
+      let j = i + 1;
+      const currLine = dateIdx[i];
+      const nextLine = dateIdx[j];
+
+      if (!nextLine) {
+        // console.log(currLine, nextLine);
+      } else {
+        const arr = lines.slice(currLine, nextLine).slice(0, 10);
+        const row = extractRowPaytm(arr, transactions.length, bankId);
+        transactions.push(row);
+      }
+    }
+
+    return transactions;
+    // console.log(dateIdx.map((val) => lines[val]));
   } catch (error) {
     return false;
   }
