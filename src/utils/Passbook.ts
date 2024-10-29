@@ -177,11 +177,29 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
     date: '',
     balance: 0,
   };
+  const n = arr.length;
   const date = new Date(arr.slice(0, 2).join()).toISOString();
   payload.date = date; // setting date
   payload.details = arr[arr.length - 1]; // settings details
+  payload.balance = stringToNumber(arr[n - 2].replace('Rs.', '')); // settings balance
+  payload.amt = stringToNumber(arr[n - 3].replace('Rs.', '')); // settings amount
 
-  console.log(arr);
+  // setting credit or debit
+  arr[n - 4] === '+'
+    ? (payload.credit = payload.amt)
+    : (payload.debit = payload.amt);
+
+  // setting refno
+  const refNo = arr.find((line) => /Reference Number/.test(line));
+  if (refNo) {
+    payload.refNo = refNo.split(': ')[1];
+  }
+  if (!refNo) {
+    const transactionId = arr.find((line) => /Transaction ID/.test(line));
+    payload.refNo = transactionId?.split(': ')[1];
+  }
+
+  console.log(payload.refNo);
   return payload;
 };
 const generatePaytmRecords = (str: string, bankId: number) => {
