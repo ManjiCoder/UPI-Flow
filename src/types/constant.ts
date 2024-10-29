@@ -31,6 +31,7 @@ export interface Transaction {
   refNo?: string | null;
   details?: string | null;
   amt?: number;
+  bankName?: string;
 }
 
 export const FilterOption = {
