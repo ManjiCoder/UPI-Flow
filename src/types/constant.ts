@@ -6,6 +6,7 @@ export enum appInfo {
 export const banks = {
   icici: { id: 1, name: 'icicibank' },
   sbi: { id: 2, name: 'statebank' },
+  paytm: { id: 3, name: 'www.paytmbank.com' },
 };
 
 export enum PaymentModes {

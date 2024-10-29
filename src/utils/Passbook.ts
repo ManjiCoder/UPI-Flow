@@ -9,8 +9,8 @@ function emptyCheck(): (
   return (str) => !['', ' '].includes(str.trim());
 }
 
-const isValidDate = (dateStr: string) => {
-  const parsedDate = parse(dateStr, 'dd-MM-yyyy', new Date());
+const isValidDate = (dateStr: string, format = 'dd-MM-yyyy') => {
+  const parsedDate = parse(dateStr, format, new Date());
   return isValid(parsedDate);
 };
 
@@ -84,7 +84,7 @@ const extractRow = (arr: string[], id: number, bankId: number) => {
   return payload;
 };
 
-export const generateICICIRecords = (str: string, bankId: number) => {
+const generateICICIRecords = (str: string, bankId: number) => {
   try {
     const transactions: Transaction[] = [];
     const dateIdx: number[] = [];
@@ -171,12 +171,38 @@ export const generateICICIRecords = (str: string, bankId: number) => {
   }
 };
 
+const generatePaytmRecords = (str: string, bankId: number) => {
+  try {
+    const transactions: Transaction[] = [];
+    const dateIdx: number[] = [];
+    const target =
+      '\nDATE & TIME\n \nTRANSACTION DETAILS\n \nAMOUNT\n \nAVAILABLE BALANCE\n';
+    const isTarget = str.includes(target);
+    if (!isTarget) throw new Error('Invalid records!');
+    const startIdx = str.indexOf(target) + target.length;
+    const newStr = str.slice(startIdx, str.length);
+    const lines = newStr.split('\n').filter(emptyCheck());
+    lines.forEach((line, i) => {
+      if (isValidDate(line, 'dd MMM yyyy')) {
+        dateIdx.push(i);
+      }
+    });
+    // console.log(lines);
+
+    console.log(dateIdx.map((val) => lines[val]));
+  } catch (error) {
+    return false;
+  }
+};
+
 // Main Function
 function passbook(str: string) {
   if (str.includes(banks.icici.name)) {
     return generateICICIRecords(str, banks.icici.id);
   } else if (str.includes(banks.sbi.name)) {
     // TODO: SBI Function
+  } else if (str.includes(banks.paytm.name)) {
+    return generatePaytmRecords(str, banks.paytm.id);
   }
 }
 
