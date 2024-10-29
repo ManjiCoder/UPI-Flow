@@ -30,7 +30,7 @@ import {
 } from 'date-fns';
 
 export default function FlowInfo() {
-  const data = useAppSelector((state) => state.payments);
+  const { data } = useAppSelector((state) => state.payments);
   const { filter } = useAppSelector((state) => state.filter);
   const { dateFilter, expense, income, balance } = useAppSelector(
     (state) => state.dateSlice
