@@ -1,7 +1,6 @@
 import {
   decrementDateFilter,
   incrementDateFilter,
-  setDateFiler,
   setFilter,
   setFilterData,
 } from '@/redux/features/Filter/dateSlice';
@@ -20,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { FilterOption } from '@/types/constant';
+import { format } from 'date-fns';
 
 export default function FlowInfo() {
   const data = useAppSelector((state) => state.payments);
@@ -31,9 +31,9 @@ export default function FlowInfo() {
   const isBalancePositive =
     Math.sign(balance) === 1 || Math.sign(balance) === 0;
 
+  const showDate = format(new Date(dateFilter), filter.format);
   const handleFilter = (key: string) => {
     dispatch(setFilter(key));
-    dispatch(setDateFiler(key));
   };
   useEffect(() => {
     dispatch(setFilterData(data));
@@ -50,7 +50,7 @@ export default function FlowInfo() {
             dispatch(decrementDateFilter());
           }}
         />
-        {dateFilter}
+        {showDate}
         <ChevronRight
           className='h-10 w-10 p-2 hover:bg-secondary rounded-md'
           role='button'

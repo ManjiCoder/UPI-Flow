@@ -1,13 +1,6 @@
 import { FilterOption, Transaction } from '@/types/constant';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  addDays,
-  addMonths,
-  addWeeks,
-  addYears,
-  format,
-  subMonths,
-} from 'date-fns';
+import { format } from 'date-fns';
 FilterOption.Daily;
 interface dateSliceState {
   dateFilter: string;
@@ -26,7 +19,7 @@ interface dateSliceState {
 }
 
 const initialState: dateSliceState = {
-  dateFilter: format(new Date(), 'MMMM, yyyy'),
+  dateFilter: new Date().toISOString(),
   filterData: {},
   filter: FilterOption.Monthly,
   expense: 0,
@@ -39,44 +32,10 @@ const dateSlice = createSlice({
   initialState,
   reducers: {
     incrementDateFilter: (state) => {
-      let newDate;
-      switch (state.filter) {
-        case FilterOption.Daily:
-          newDate = format(
-            addDays(new Date(state.dateFilter), 1),
-            'MMM dd, yyyy'
-          );
-          break;
-        case FilterOption.Weekly:
-          newDate = format(addWeeks(new Date(state.dateFilter), 1), 'MMM dd');
-          break;
-        case FilterOption.ThreeMonths:
-          newDate = format(addMonths(new Date(state.dateFilter), 3), 'MMM');
-          break;
-        case FilterOption.SixMonths:
-          newDate = format(addMonths(new Date(state.dateFilter), 6), 'MMM');
-          break;
-        case FilterOption.Yearly:
-          newDate = format(addYears(new Date(state.dateFilter), 1), 'yyyy');
-          break;
-        default:
-          newDate = format(addWeeks(new Date(state.dateFilter), 1), 'yyyy-MM');
-          break;
-      }
-      console.log(newDate);
-      state.dateFilter = newDate;
+      const key = state.filter;
+      console.log(key);
     },
-    decrementDateFilter: (state) => {
-      const newDate = format(
-        subMonths(new Date(state.dateFilter), 1),
-        'yyyy-MM'
-      );
-      state.dateFilter = newDate;
-    },
-    setDateFiler: (state, action) => {
-      // state.dateFilter = action.payload;
-      console.log(action.payload);
-    },
+    decrementDateFilter: (state) => {},
     setFilterData: (state, action: PayloadAction<Transaction[]>) => {
       const data = action.payload;
       const dateFilterStr = format(state.dateFilter, 'yyyy-MM');
@@ -122,7 +81,6 @@ const dateSlice = createSlice({
 export const {
   incrementDateFilter,
   decrementDateFilter,
-  setDateFiler,
   setFilterData,
   setFilter,
 } = dateSlice.actions;
