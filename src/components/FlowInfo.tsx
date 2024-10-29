@@ -119,8 +119,9 @@ export default function FlowInfo() {
         break;
 
       case FilterOption.Yearly.name:
-        startDate = new Date(new Date(showDate).setMonth(1, 0)).toISOString();
-        endDate = new Date(new Date(showDate).setMonth(12, 0)).toISOString();
+        const year = new Date(dateFilter).getFullYear();
+        startDate = new Date(year, 0, 1, 0, 0, 0, 0).toISOString();
+        endDate = new Date(year, 11, 31, 23, 59, 59, 999).toISOString();
         break;
 
       default:

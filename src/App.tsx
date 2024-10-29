@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppContainer from './components/AppContainer';
 import Loader from './components/Loader';
+
 // import Analytics from './pages/Analytics';
 // import Home from './pages/Home';
 // import Records from './pages/Records';
@@ -10,7 +11,7 @@ import Loader from './components/Loader';
 const Home = lazy(() => import('./pages/Home'));
 const Records = lazy(() => import('./pages/Records'));
 const Analytics = lazy(() => import('./pages/Analytics'));
-const Test = lazy(() => import('./temp/Test'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
           <Route path='/' Component={Home} />
           <Route path='/records' Component={Records} />
           <Route path='/analytics' Component={Analytics} />
-          <Route path='/settings' Component={Test} />
+          <Route path='/settings' Component={Settings} />
         </Routes>
       </Suspense>
     </AppContainer>
