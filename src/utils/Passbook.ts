@@ -217,6 +217,12 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
 
   payload.id = id;
   payload.bankId = bankId;
+  if (
+    Object.values(payload).includes(undefined) ||
+    Object.values(payload).includes(NaN)
+  ) {
+    // console.log(arr);
+  }
   // console.log(payload);
   return payload;
 };
@@ -245,14 +251,18 @@ const generatePaytmRecords = (str: string, bankId: number) => {
       if (!nextLine) {
         // console.log(currLine, nextLine);
         const plusOrMinusIdx = lines.findIndex(
-          (line) => line.includes('+') || line.includes('-')
+          (line) => line === '+' || line === '-'
         );
         const arr = lines.slice(currLine, currLine + plusOrMinusIdx + 3);
         const row = extractRowPaytm(arr, transactions.length, bankId);
         transactions.push(row);
       } else {
-        const arr = lines.slice(currLine, nextLine).slice(0, 10);
-        const row = extractRowPaytm(arr, transactions.length, bankId);
+        const arr = lines.slice(currLine, nextLine);
+        const plusOrMinusIdx = arr.findIndex(
+          (line) => line === '+' || line === '-'
+        );
+        const newArr = arr.slice(0, plusOrMinusIdx + 4);
+        const row = extractRowPaytm(newArr, transactions.length, bankId);
         transactions.push(row);
       }
     }

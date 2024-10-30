@@ -6,7 +6,16 @@ import { bank } from './temp/temp';
 export default function Settings() {
   useEffect(() => {
     const rows = passbook(bank);
-    console.table(rows);
+
+    // const temp = rows.map((item) => {
+    //   return {
+    //     date: format(item.date, 'dd-MMM-yyyy'),
+    //     to: item.to,
+    //     info: item.details,
+    //   };
+    // });
+    // console.table(temp);
+    console.log(rows);
   }, []);
 
   return (
