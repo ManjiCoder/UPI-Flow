@@ -40,6 +40,7 @@ export default function Search() {
       balance: totalBalance,
     };
   }, [searchResults]);
+  const isBalancePositive = Math.sign(balance) !== -1;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
   };
@@ -82,40 +83,41 @@ export default function Search() {
 
   return (
     <PageWrapper className='gap-y-5'>
-      <Input
-        type='search'
-        placeholder='Search for records'
-        autoFocus
-        onChange={handleChange}
-        value={text}
-      />
-
-      <h4 className='flex justify-between'>
-        <div className='flex flex-col text-left'>
-          <span>Expense </span>
-          <span className='text-red-600 dark:text-red-400 '>
-            {`${formattedAmount(expense, true)}`}
-          </span>
-        </div>
-        <div className='flex flex-col text-center'>
-          <span>Income</span>
-          <span className='text-green-600 dark:text-green-400 '>
-            {`${formattedAmount(income, true)}`}
-          </span>
-        </div>
-        <div className='flex flex-col text-right'>
-          <span>Balance </span>
-          <span
-            className={
-              Math.sign(balance) !== -1
-                ? 'text-green-600 dark:text-green-400'
-                : 'text-red-600 dark:text-red-400'
-            }
-          >
-            {`${formattedAmount(balance, true)}`}
-          </span>
-        </div>
-      </h4>
+      <header className='flex px-8 py-3 gap-y-3 flex-col sticky top-0 backdrop-blur-sm border-b-2'>
+        <Input
+          type='search'
+          placeholder='Search for records'
+          autoFocus
+          onChange={handleChange}
+          value={text}
+        />
+        <h4 className='flex justify-between'>
+          <div className='flex flex-col text-left'>
+            <span>Expense </span>
+            <span className='text-red-600 dark:text-red-400 '>
+              {`${formattedAmount(expense, true)}`}
+            </span>
+          </div>
+          <div className='flex flex-col text-center'>
+            <span>Income</span>
+            <span className='text-green-600 dark:text-green-400 '>
+              {`${formattedAmount(income, true)}`}
+            </span>
+          </div>
+          <div className='flex flex-col text-right'>
+            <span>Balance </span>
+            <span
+              className={
+                isBalancePositive
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
+              }
+            >
+              {`${formattedAmount(balance, true)}`}
+            </span>
+          </div>
+        </h4>
+      </header>
 
       {searchResults.length === 0 && (
         <div className='min-h-[60vh] flex flex-col gap-3 items-center justify-center'>
