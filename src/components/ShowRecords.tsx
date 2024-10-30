@@ -24,11 +24,6 @@ export default function ShowRecords() {
                 {format(date, 'MMM dd, EEEE')}
               </h5>
               {item.map((row: Transaction) => {
-                // @ts-ignore
-                let [_, receiver, msg, info] = row.details?.split('/');
-                receiver = /[a-z]/i.test(receiver) ? receiver : info;
-                receiver = receiver ||= row.to;
-
                 return (
                   <section
                     key={row.id}
@@ -43,7 +38,9 @@ export default function ShowRecords() {
                         {/* Receiver */}
                         <p className='flex items-center gap-x-1'>
                           <LucideCornerUpRight size={16} />
-                          <span className='font-semibold'>{receiver}</span>
+                          <span className='font-semibold'>
+                            {row.receiver ? row.receiver : row.to}
+                          </span>
                         </p>
                         <p className='text-sm flex items-center gap-x-1'>
                           <LucideCornerLeftUp size={16} />

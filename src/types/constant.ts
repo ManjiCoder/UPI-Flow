@@ -36,6 +36,7 @@ export interface Transaction {
   amt?: number;
   bankId?: number;
   to?: string;
+  receiver?: string;
 }
 
 export const FilterOption = {

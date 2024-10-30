@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 
 export default function Search() {
   const { data } = useAppSelector((state) => state.payments);
-  const [text, setText] = useState('gharjan');
+  const [text, setText] = useState('');
   const [searchResults, setSearchResults] = useState<Transaction[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +46,7 @@ export default function Search() {
     // Deboucing
     const timerId = setTimeout(async () => {
       const data = await showSearchResults(text);
+      // console.log(data);
       if (data) {
         setSearchResults(data);
       }

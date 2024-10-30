@@ -81,20 +81,28 @@ const extractRow = (arr: string[], id: number, bankId: number) => {
     payload.amt = stringToNumber(amt);
   }
   const receiver = details.split('/').filter((str) => str.includes('@'));
-  if (receiver.length !== 0 && payload.mode === PaymentModes.UPI) {
+  if (receiver.length !== 0) {
     const arr = details.split('/');
     if (!/[a-z]/i.test(arr[1])) {
       payload.to = arr[3];
-      // console.log(payload.to);
     } else {
       payload.to = arr[1];
-      // console.log(payload.to);
     }
   }
-  if (!receiver) {
-    console.log(details);
+  if (receiver.length === 0) {
+    const arr = details.split('/');
+    if (!/[a-z]/i.test(arr[1])) {
+      payload.to = arr[3];
+    } else {
+      payload.to = arr[1];
+    }
   }
 
+  if (!payload.to) {
+    if (payload.mode === PaymentModes.Int) {
+      payload.to = 'Self';
+    }
+  }
   return payload;
 };
 
@@ -186,7 +194,7 @@ const generateICICIRecords = (str: string, bankId: number, lastId: number) => {
       delete currRow.amt;
     }
     // console.table(dateIdx.map((str) => lines[str]));
-
+    console.log(transactions.filter(({ to }) => !to));
     return transactions;
   } catch (error) {
     console.log(error);
@@ -273,7 +281,7 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
       }
     }
   }
-
+  payload.receiver = payload.details;
   // console.log(payload);
   return payload;
 };
@@ -322,7 +330,7 @@ const generatePaytmRecords = (str: string, bankId: number, lastId: number) => {
       }
     }
 
-    console.log(transactions.filter(({ to }) => !to));
+    // console.log(transactions.filter(({ to }) => !to));
     // console.log(dateIdx.map((val) => lines[val]));
     // @ts-ignore
     return transactions;
