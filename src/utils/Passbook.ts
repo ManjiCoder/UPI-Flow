@@ -242,12 +242,23 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
 
   payload.id = id;
   payload.bankId = bankId;
-  // if (
-  //   Object.values(payload).includes(undefined) ||
-  //   Object.values(payload).includes(NaN)
-  // ) {
-  //   console.log(arr, payload, arr[plusOrMinusIdx + 3]);
-  // }
+  if (!receiver) {
+    const isSendOrReceive = details.split(': ')[1];
+    if (isSendOrReceive) {
+      payload.to = isSendOrReceive;
+    }
+    if (!isSendOrReceive) {
+      try {
+        payload.to = details.split('at ')[1] || details.split('from ')[1];
+        if (!payload.to) {
+          payload.to = details;
+        }
+      } catch (error) {
+        payload.to = details;
+      }
+    }
+  }
+
   // console.log(payload);
   return payload;
 };
@@ -296,7 +307,7 @@ const generatePaytmRecords = (str: string, bankId: number, lastId: number) => {
       }
     }
 
-    console.log(transactions);
+    // console.log(transactions);
     // console.log(dateIdx.map((val) => lines[val]));
     // @ts-ignore
     return transactions;
