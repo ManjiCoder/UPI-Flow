@@ -68,15 +68,19 @@ export default function UploadFile() {
         if (!rows) {
           return reject('Error occured while processing file');
         }
+        // To get uniques rows or updated rows
         const updatedRow = [...payments];
         const updatedKeys = [...keys];
+
         rows.forEach((item, idx) => {
           if (item.details) {
             const details = item.details.trim();
-            if (!updatedKeys.includes(details)) {
-              updatedKeys.push(details);
+            const key = item.refNo + details;
+            // console.log(updatedKeys.includes(key), key);
+            if (!updatedKeys.includes(key)) {
+              updatedKeys.push(key);
               updatedRow.push(item);
-            } else if (updatedKeys.includes(details)) {
+            } else if (updatedKeys.includes(key)) {
               updatedRow[idx] = item;
             }
           }
