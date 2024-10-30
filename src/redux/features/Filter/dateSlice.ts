@@ -115,7 +115,7 @@ const dateSlice = createSlice({
             (isBefore(date, endDate) && isAfter(date, startDate))
           );
         })
-        .reverse();
+        .sort((a, b) => b.id - a.id);
       // console.log(filterData);
       const newData: { [date: string]: Transaction[] } = {};
       filterData.map((item) => {

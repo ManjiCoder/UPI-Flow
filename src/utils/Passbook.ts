@@ -84,7 +84,7 @@ const extractRow = (arr: string[], id: number, bankId: number) => {
   return payload;
 };
 
-const generateICICIRecords = (str: string, bankId: number) => {
+const generateICICIRecords = (str: string, bankId: number, lastId: number) => {
   try {
     const transactions: Transaction[] = [];
     const dateIdx: number[] = [];
@@ -128,7 +128,11 @@ const generateICICIRecords = (str: string, bankId: number) => {
           }
         });
         const arr = lines.slice(currLine, lastBal + 1);
-        const rowData = extractRow(arr, transactions.length + 1, bankId);
+        const rowData = extractRow(
+          arr,
+          lastId + transactions.length + 1,
+          bankId
+        );
         transactions.push(rowData);
       } else {
         let arr = lines.slice(currLine, nextLine);
@@ -136,7 +140,11 @@ const generateICICIRecords = (str: string, bankId: number) => {
           // @ts-ignore
           arr = arr.slice(arr, arr.indexOf('Page'));
         }
-        const rowData = extractRow(arr, transactions.length + 1, bankId);
+        const rowData = extractRow(
+          arr,
+          lastId + transactions.length + 1,
+          bankId
+        );
         transactions.push(rowData);
       }
     }
@@ -243,7 +251,7 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
   // console.log(payload);
   return payload;
 };
-const generatePaytmRecords = (str: string, bankId: number) => {
+const generatePaytmRecords = (str: string, bankId: number, lastId: number) => {
   try {
     const transactions: Transaction[] = [];
     const dateIdx: number[] = [];
@@ -271,7 +279,7 @@ const generatePaytmRecords = (str: string, bankId: number) => {
           (line) => line === '+' || line === '-'
         );
         const arr = lines.slice(currLine, currLine + plusOrMinusIdx + 3);
-        const row = extractRowPaytm(arr, transactions.length, bankId);
+        const row = extractRowPaytm(arr, lastId + transactions.length, bankId);
         transactions.push(row);
       } else {
         const arr = lines.slice(currLine, nextLine);
@@ -279,13 +287,18 @@ const generatePaytmRecords = (str: string, bankId: number) => {
           (line) => line === '+' || line === '-'
         );
         const newArr = arr.slice(0, plusOrMinusIdx + 4);
-        const row = extractRowPaytm(newArr, transactions.length, bankId);
+        const row = extractRowPaytm(
+          newArr,
+          lastId + transactions.length,
+          bankId
+        );
         transactions.push(row);
       }
     }
 
     console.log(transactions);
     // console.log(dateIdx.map((val) => lines[val]));
+    // @ts-ignore
     return transactions;
   } catch (error) {
     return false;
@@ -293,13 +306,13 @@ const generatePaytmRecords = (str: string, bankId: number) => {
 };
 
 // Main Function
-function passbook(str: string) {
+function passbook(str: string, lastId = 0) {
   if (str.includes(banks.icici.name)) {
-    return generateICICIRecords(str, banks.icici.id);
+    return generateICICIRecords(str, banks.icici.id, lastId);
   } else if (str.includes(banks.sbi.name)) {
     // TODO: SBI Function
   } else if (str.includes(banks.paytm.name)) {
-    return generatePaytmRecords(str, banks.paytm.id);
+    return generatePaytmRecords(str, banks.paytm.id, lastId);
   }
 }
 

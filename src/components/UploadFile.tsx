@@ -1,5 +1,5 @@
 import { setRows } from '@/redux/features/UPI/paymentsSlices';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import passbook from '@/utils/Passbook';
 import { File } from 'buffer';
 import * as PDFJS from 'pdfjs-dist';
@@ -26,6 +26,7 @@ import { LucideEye, LucideEyeOff, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 export default function UploadFile() {
+  const { data: payments } = useAppSelector((state) => state.payments);
   const navigator = useNavigate();
   const [pdfText, setPdfText] = useState('');
   const [pass, setPass] = useState('');
@@ -62,7 +63,7 @@ export default function UploadFile() {
         }
         setPdfText(text);
         // console.log(text);
-        const rows = passbook(text);
+        const rows = passbook(text, payments.length);
         // console.table(rows);
         if (!rows) {
           return reject('Error occured while processing file');
