@@ -27,7 +27,7 @@ export default function ShowRecords() {
                 return (
                   <section
                     key={row.id}
-                    className='flex py-2 items-center justify-between border-t'
+                    className='grid grid-cols-[80%,20%] py-2 items-center justify-between border-t'
                   >
                     <div className='flex space-x-2 items-center'>
                       {/* Icon */}
@@ -50,11 +50,11 @@ export default function ShowRecords() {
                       </div>
                     </div>
                     {row.credit ? (
-                      <span className='text-green-600 dark:text-green-400 font-bold'>
+                      <span className='text-green-600 text-right dark:text-green-400 font-bold'>
                         {`+${formattedAmount(row.credit, true)}`}
                       </span>
                     ) : row.debit ? (
-                      <span className='text-red-600 dark:text-red-400 font-bold'>
+                      <span className='text-red-600 text-right dark:text-red-400 font-bold'>
                         {`-${formattedAmount(row.debit, true)}`}
                       </span>
                     ) : (
