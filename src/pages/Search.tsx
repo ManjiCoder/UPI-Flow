@@ -10,13 +10,36 @@ import {
   LucideCornerLeftUp,
   LucideCornerUpRight,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function Search() {
   const { data } = useAppSelector((state) => state.payments);
   const [text, setText] = useState('');
   const [searchResults, setSearchResults] = useState<Transaction[]>([]);
 
+  const { income, expense, balance } = useMemo(() => {
+    const totalIncome = searchResults
+      .map(({ credit }) => credit)
+      .filter(Boolean)
+      .reduce((x, y) => {
+        // @ts-ignore
+        return x + y;
+      }, 0);
+    const totalExpense = searchResults
+      .map(({ debit }) => debit)
+      .filter(Boolean)
+      .reduce((x, y) => {
+        // @ts-ignore
+        return x + y;
+      }, 0);
+
+    const totalBalance = (totalIncome || 0) - (totalExpense || 0);
+    return {
+      income: totalIncome,
+      expense: totalExpense,
+      balance: totalBalance,
+    };
+  }, [searchResults]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
   };
@@ -66,6 +89,33 @@ export default function Search() {
         onChange={handleChange}
         value={text}
       />
+
+      <h4 className='flex justify-between'>
+        <div className='flex flex-col text-left'>
+          <span>Expense </span>
+          <span className='text-red-600 dark:text-red-400 '>
+            {`${formattedAmount(expense, true)}`}
+          </span>
+        </div>
+        <div className='flex flex-col text-center'>
+          <span>Income</span>
+          <span className='text-green-600 dark:text-green-400 '>
+            {`${formattedAmount(income, true)}`}
+          </span>
+        </div>
+        <div className='flex flex-col text-right'>
+          <span>Balance </span>
+          <span
+            className={
+              Math.sign(balance) !== -1
+                ? 'text-green-600 dark:text-green-400'
+                : 'text-red-600 dark:text-red-400'
+            }
+          >
+            {`${formattedAmount(balance, true)}`}
+          </span>
+        </div>
+      </h4>
 
       {searchResults.length === 0 && (
         <div className='min-h-[60vh] flex flex-col gap-3 items-center justify-center'>
