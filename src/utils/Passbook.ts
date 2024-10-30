@@ -80,6 +80,20 @@ const extractRow = (arr: string[], id: number, bankId: number) => {
   if (amt) {
     payload.amt = stringToNumber(amt);
   }
+  const receiver = details.split('/').filter((str) => str.includes('@'));
+  if (receiver.length !== 0 && payload.mode === PaymentModes.UPI) {
+    const arr = details.split('/');
+    if (!/[a-z]/i.test(arr[1])) {
+      payload.to = arr[3];
+      // console.log(payload.to);
+    } else {
+      payload.to = arr[1];
+      // console.log(payload.to);
+    }
+  }
+  if (!receiver) {
+    console.log(details);
+  }
 
   return payload;
 };
@@ -172,6 +186,7 @@ const generateICICIRecords = (str: string, bankId: number, lastId: number) => {
       delete currRow.amt;
     }
     // console.table(dateIdx.map((str) => lines[str]));
+
     return transactions;
   } catch (error) {
     console.log(error);
@@ -307,7 +322,7 @@ const generatePaytmRecords = (str: string, bankId: number, lastId: number) => {
       }
     }
 
-    // console.log(transactions);
+    console.log(transactions.filter(({ to }) => !to));
     // console.log(dateIdx.map((val) => lines[val]));
     // @ts-ignore
     return transactions;
