@@ -186,10 +186,27 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
   payload.amt = stringToNumber(arr[n - 3].replace('Rs.', '')); // settings amount
 
   // setting credit or debit
-  arr[n - 4] === '+'
-    ? (payload.credit = payload.amt)
-    : (payload.debit = payload.amt);
+  const plusOrMinusIdx = arr.findIndex((line) => line === '+' || line === '-');
+  const plusOrMinus = arr[plusOrMinusIdx];
 
+  const amt = arr[plusOrMinusIdx + 1];
+  const balance = arr[plusOrMinusIdx + 2];
+  const details = arr[plusOrMinusIdx + 3];
+
+  if (amt) {
+    payload.amt = stringToNumber(amt.replace('Rs.', ''));
+  }
+  if (balance) {
+    payload.balance = stringToNumber(balance.replace('Rs.', ''));
+  }
+  if (details) {
+    payload.details = details;
+  }
+  if (plusOrMinus === '+') {
+    payload.credit = payload.amt;
+  } else if (plusOrMinus === '-') {
+    payload.debit = payload.amt;
+  }
   // setting refNo
   const refNo = arr.find((line) => /Reference Number/.test(line));
   if (refNo) {
@@ -217,12 +234,12 @@ const extractRowPaytm = (arr: string[], id: number, bankId: number) => {
 
   payload.id = id;
   payload.bankId = bankId;
-  if (
-    Object.values(payload).includes(undefined) ||
-    Object.values(payload).includes(NaN)
-  ) {
-    // console.log(arr);
-  }
+  // if (
+  //   Object.values(payload).includes(undefined) ||
+  //   Object.values(payload).includes(NaN)
+  // ) {
+  //   console.log(arr, payload, arr[plusOrMinusIdx + 3]);
+  // }
   // console.log(payload);
   return payload;
 };
