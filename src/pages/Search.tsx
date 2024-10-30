@@ -132,42 +132,41 @@ export default function Search() {
         </h3>
         {searchResults.map((row) => {
           return (
-            <section key={row.id} className='py-3 border-b-2'>
-              <h5 className='text-lg font-semibold mb-2'>
-                {format(row.date, 'MMM dd, EEEE')}
-              </h5>
-
-              <div className='flex py-2 items-center justify-between border-t'>
-                <div className='flex space-x-2 items-center'>
-                  {/* Icon */}
-                  <p className='row-span-2'>
-                    <LucideBadgeIndianRupee />
+            <section
+              key={row.id}
+              className='grid grid-cols-[80%,20%] py-2 items-center justify-between border-t'
+            >
+              <div className='flex space-x-2 items-center'>
+                {/* Icon */}
+                <p className='row-span-2'>
+                  <LucideBadgeIndianRupee />
+                </p>
+                <div className='flex flex-col gap-y-0.5 justify-start'>
+                  {/* Receiver */}
+                  <p className='flex items-center gap-x-1'>
+                    <LucideCornerUpRight size={16} />
+                    <span className='font-semibold'>
+                      {row.receiver ? row.receiver : row.to}
+                    </span>
                   </p>
-                  <div className='flex flex-col gap-y-0.5 justify-start'>
-                    {/* Receiver */}
-                    <p className='flex items-center gap-x-1'>
-                      <LucideCornerUpRight size={16} />
-                      <span className='font-semibold'>{row.to}</span>
-                    </p>
-                    <p className='text-sm flex items-center gap-x-1'>
-                      <LucideCornerLeftUp size={16} />
-                      {row.mode}
-                    </p>
-                    {/* Mode */}
-                  </div>
+                  <p className='text-sm flex items-center gap-x-1'>
+                    <LucideCornerLeftUp size={16} />
+                    {row.mode}
+                  </p>
+                  {/* Mode */}
                 </div>
-                {row.credit ? (
-                  <span className='text-green-600 dark:text-green-400 font-bold'>
-                    {`+${formattedAmount(row.credit, true)}`}
-                  </span>
-                ) : row.debit ? (
-                  <span className='text-red-600 dark:text-red-400 font-bold'>
-                    {`-${formattedAmount(row.debit, true)}`}
-                  </span>
-                ) : (
-                  <span className='font-bold'>0</span>
-                )}
               </div>
+              {row.credit ? (
+                <span className='text-green-600 text-right dark:text-green-400 font-bold'>
+                  {`+${formattedAmount(row.credit, true)}`}
+                </span>
+              ) : row.debit ? (
+                <span className='text-red-600 text-right dark:text-red-400 font-bold'>
+                  {`-${formattedAmount(row.debit, true)}`}
+                </span>
+              ) : (
+                <span className='font-bold'>0</span>
+              )}
             </section>
           );
         })}
