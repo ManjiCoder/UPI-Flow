@@ -40,7 +40,7 @@ export default function Search() {
       balance: totalBalance,
     };
   }, [searchResults]);
-  console.log(balance);
+
   const isBalancePositive = Math.sign(balance) !== -1;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);

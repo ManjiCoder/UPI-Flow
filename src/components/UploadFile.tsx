@@ -85,7 +85,7 @@ export default function UploadFile() {
             }
           }
         });
-        console.log(updatedRow.length, updatedKeys.length, rows.length);
+        // console.log(updatedRow.length, updatedKeys.length, rows.length);
         dispatch(setRows({ data: updatedRow, keys: updatedKeys }));
         navigator('/records');
         resolve(rows);
