@@ -12,6 +12,7 @@ const Home = lazy(() => import('./pages/Home'));
 const Records = lazy(() => import('./pages/Records'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Search = lazy(() => import('./pages/Search'));
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path='/records' Component={Records} />
           <Route path='/analytics' Component={Analytics} />
           <Route path='/settings' Component={Settings} />
+          <Route path='/search' Component={Search} />
         </Routes>
       </Suspense>
     </AppContainer>

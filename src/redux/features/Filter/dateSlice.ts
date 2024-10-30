@@ -16,7 +16,7 @@ import {
   subWeeks,
   subYears,
 } from 'date-fns';
-FilterOption.Daily;
+
 interface dateSliceState {
   dateFilter: string;
   filterData:
@@ -27,6 +27,7 @@ interface dateSliceState {
   expense: number;
   income: number;
   balance: number;
+  search: null | string;
 }
 
 const initialState: dateSliceState = {
@@ -35,6 +36,7 @@ const initialState: dateSliceState = {
   expense: 0,
   income: 0,
   balance: 0,
+  search: null,
 };
 
 const dateSlice = createSlice({
@@ -152,9 +154,16 @@ const dateSlice = createSlice({
       state.expense = totalExpense;
       state.balance = totalBalance;
     },
+    setSearch: (state, action) => {
+      state.search = action.payload;
+    },
   },
 });
 
-export const { incrementDateFilter, decrementDateFilter, setFilterData } =
-  dateSlice.actions;
+export const {
+  incrementDateFilter,
+  decrementDateFilter,
+  setFilterData,
+  setSearch,
+} = dateSlice.actions;
 export default dateSlice.reducer;

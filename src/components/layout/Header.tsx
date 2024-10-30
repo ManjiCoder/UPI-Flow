@@ -1,10 +1,16 @@
 import { appInfo } from '@/types/constant';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { SearchIcon } from 'lucide-react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '../ui/button';
 import { footerOption } from './Footer';
 import { ThemeBtn } from './ThemeBtn';
 
 export default function Header() {
+  const navigator = useNavigate();
   const { pathname: pathName } = useLocation();
+
+  if (['/search'].includes(pathName)) return;
+
   return (
     <nav className='flex justify-between px-6 sm:px-20 py-4'>
       <section className='flex space-x-20 items-center'>
@@ -28,8 +34,15 @@ export default function Header() {
           })}
         </ol>
       </section>
-      <section className='flex items-center'>
+      <section className='flex items-center space-x-1'>
         {/* Search Bar */}
+        <Button
+          variant='ghost'
+          size='icon'
+          onClick={() => navigator('/search')}
+        >
+          <SearchIcon />
+        </Button>
         <ThemeBtn />
       </section>
     </nav>

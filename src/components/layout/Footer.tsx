@@ -25,6 +25,7 @@ export const footerOption = [
 ];
 export default function Footer() {
   const { pathname: pathName } = useLocation();
+  if (['/search'].includes(pathName)) return;
   return (
     <footer className=''>
       <ol className='flex sm:hidden fixed z-10 backdrop-blur-md bottom-0 w-full border-t-[1px] border-slate-600 justify-evenly py-3 gap-3'>
