@@ -8,6 +8,7 @@ import {
   isAfter,
   isBefore,
   isEqual,
+  isSameDay,
   parseISO,
   startOfWeek,
   subDays,
@@ -116,12 +117,19 @@ const dateSlice = createSlice({
         })
         .reverse();
       // console.log(filterData);
-      const newData = filterData.reduce((acc, item) => {
-        // @ts-ignore
-        const arr = (acc[item.date] ||= []);
-        arr.push(item);
-        return acc;
-      }, {});
+      const newData: { [date: string]: Transaction[] } = {};
+      filterData.map((item) => {
+        const date = new Date(new Date(item.date).setHours(0, 0, 0, 0));
+        const dateStr = date.toISOString();
+        if (isSameDay(date, parseISO(item.date))) {
+          if (newData[dateStr]) {
+            newData[dateStr].push(item);
+          } else {
+            newData[dateStr] = [item];
+          }
+        }
+      });
+      console.log(newData);
 
       const totalIncome = filterData
         .map(({ credit }) => credit)

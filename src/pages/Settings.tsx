@@ -15,7 +15,7 @@ export default function Settings() {
     //   };
     // });
     // console.table(temp);
-    // console.log(rows);
+    console.table(rows);
   }, []);
 
   return (

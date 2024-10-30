@@ -284,8 +284,9 @@ const generatePaytmRecords = (str: string, bankId: number) => {
       }
     }
 
-    return transactions;
+    console.log(transactions);
     // console.log(dateIdx.map((val) => lines[val]));
+    return transactions;
   } catch (error) {
     return false;
   }
