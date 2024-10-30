@@ -194,7 +194,7 @@ const generateICICIRecords = (str: string, bankId: number, lastId: number) => {
       delete currRow.amt;
     }
     // console.table(dateIdx.map((str) => lines[str]));
-    console.log(transactions.filter(({ to }) => !to));
+    // console.log(transactions.filter(({ to }) => !to));
     return transactions;
   } catch (error) {
     console.log(error);

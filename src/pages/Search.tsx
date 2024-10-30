@@ -134,7 +134,7 @@ export default function Search() {
           return (
             <section key={row.id} className='py-3 border-b-2'>
               <h5 className='text-lg font-semibold mb-2'>
-                {format(row.date, 'MMM dd, EEEE')}
+                {format(row.date, 'MMM dd yyyy, EEEE')}
               </h5>
               <section className='grid grid-cols-[80%,20%] py-2 items-center justify-between border-t'>
                 <div className='flex space-x-2 items-center'>

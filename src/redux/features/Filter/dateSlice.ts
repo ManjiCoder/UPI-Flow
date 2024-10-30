@@ -131,7 +131,7 @@ const dateSlice = createSlice({
           }
         }
       });
-      console.log(newData);
+      // console.log(newData);
 
       const totalIncome = filterData
         .map(({ credit }) => credit)
