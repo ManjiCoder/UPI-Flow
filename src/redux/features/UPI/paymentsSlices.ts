@@ -14,9 +14,13 @@ const paymentsSlice = createSlice({
   name: 'payments',
   initialState,
   reducers: {
-    setRows: (state, action: PayloadAction<Transaction[]>) => {
-      const data = action.payload;
+    setRows: (
+      state,
+      action: PayloadAction<{ data: Transaction[]; keys: string[] }>
+    ) => {
+      const { data, keys } = action.payload;
       state.data = data;
+      state.keys = keys;
     },
     resetPaymentSlice: () => {
       return initialState;

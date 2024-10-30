@@ -26,7 +26,7 @@ import { LucideEye, LucideEyeOff, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 export default function UploadFile() {
-  const { data: payments } = useAppSelector((state) => state.payments);
+  const { data: payments, keys } = useAppSelector((state) => state.payments);
   const navigator = useNavigate();
   const [pdfText, setPdfText] = useState('');
   const [pass, setPass] = useState('');
@@ -68,7 +68,21 @@ export default function UploadFile() {
         if (!rows) {
           return reject('Error occured while processing file');
         }
-        dispatch(setRows(rows));
+        const updatedRow = [...payments];
+        const updatedKeys = [...keys];
+        rows.forEach((item, idx) => {
+          if (item.details) {
+            const details = item.details.trim();
+            if (!updatedKeys.includes(details)) {
+              updatedKeys.push(details);
+              updatedRow.push(item);
+            } else if (updatedKeys.includes(details)) {
+              updatedRow[idx] = item;
+            }
+          }
+        });
+        console.log(updatedRow.length, updatedKeys.length, rows.length);
+        dispatch(setRows({ data: updatedRow, keys: updatedKeys }));
         navigator('/records');
         resolve(rows);
       } catch (error: any) {
